@@ -62,7 +62,7 @@ public record RecommendResponse(
     public record LayerDto(String material, double thicknessUm) {
     }
 
-    public record ScoresDto(double barrier, double cost, double eco, double strength, double total) {
+    public record ScoresDto(double barrier, double cost, double eco, double strength, double total, Double topsis) {
     }
 
     public record CurvePointDto(int day, Double o2UsedPct, Double moistureUsedPct) {

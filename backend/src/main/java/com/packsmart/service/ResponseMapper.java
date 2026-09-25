@@ -80,7 +80,7 @@ public class ResponseMapper {
         return new OptionDto(rank, c.getName(), c.getKind().name(), layers(c.getLayers()), e.totalThicknessUm(),
                 Num.sig(e.otr()), Num.sig(e.wvtr()),
                 new ScoresDto(Num.dp(s.barrier(), 3), Num.dp(s.cost(), 3), Num.dp(s.eco(), 3), Num.dp(s.strength(), 3),
-                        Num.dp(s.total(), 3)),
+                        Num.dp(s.total(), 3), s.topsis() == null ? null : Num.dp(s.topsis(), 3)),
                 sl.estimatedDays(), sl.limitingFactor().name(), days(sl.o2Days()), days(sl.moistureDays()),
                 Num.dp(c.getEconomics().costPer1000Inr(), 2), Num.dp(c.getEconomics().co2eKgPer1000(), 3),
                 Num.dp(c.getEconomics().gramsPerPack(), 3), e.recyclable(), e.biodegradable(), e.family(), e.transparent(),

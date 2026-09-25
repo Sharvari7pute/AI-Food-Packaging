@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class ScoringService {
 
     private final EngineProperties props;
+    private final TopsisRanker topsis;
 
     /**
      * Hard filters. Returns the reasons a candidate is rejected (empty = passes).
@@ -130,6 +131,49 @@ public class ScoringService {
         double total = w.getBarrier() * barrierScore + w.getCost() * costScore + w.getEco() * ecoScore
                 + w.getStrength() * strengthScore;
         return new Scores(barrierScore, costScore, ecoScore, strengthScore, total);
+    }
+
+    /**
+     * Ranks passing candidates. Non-MAP: TOPSIS over four criteria (barrier safety margin, cost per pack, eco score,
+     * strength) with the priority's weights - or the plain weighted total when {@code engine.ranking-method=weighted}.
+     * MAP: closeness to the required OTR.
+     */
+    public List<Candidate> rank(List<Candidate> passed, boolean map, BarrierRequirements b, Priority priority) {
+        if (!map && "topsis".equalsIgnoreCase(props.getRankingMethod()) && !passed.isEmpty()) {
+            applyTopsis(passed, b, priority);
+            return passed.stream()
+                    .sorted(Comparator.comparingDouble((Candidate c) -> -c.getScores().topsis())
+                            .thenComparingDouble(c -> c.getEconomics().costPerPackInr())
+                            .thenComparing(Candidate::getName))
+                    .toList();
+        }
+        return rank(passed, map);
+    }
+
+    /**
+     * TOPSIS criteria per candidate: barrier = log10(min(margin, overkillMargin)) (benefit - extra barrier beyond the
+     * overkill margin earns nothing), cost per pack (cost), eco score (benefit), strength (benefit).
+     */
+    void applyTopsis(List<Candidate> passed, BarrierRequirements b, Priority priority) {
+        EngineProperties.Weights w = props.weightsFor(priority.name());
+        List<TopsisRanker.Criterion> criteria = List.of(
+                new TopsisRanker.Criterion("barrier", w.getBarrier(), true),
+                new TopsisRanker.Criterion("cost", w.getCost(), false),
+                new TopsisRanker.Criterion("eco", w.getEco(), true),
+                new TopsisRanker.Criterion("strength", w.getStrength(), true));
+        List<double[]> matrix = new java.util.ArrayList<>();
+        for (Candidate c : passed) {
+            Double margin = barrierMargin(c.getEval(), b);
+            double capped = margin == null ? 1 : Math.min(Math.max(margin, 1), props.getOverkillMargin());
+            // log10(1) = 0 would make every "just passes" pack identical on this axis; shift by 1 to keep it positive
+            double barrier = 1 + Math.log10(capped);
+            matrix.add(new double[]{barrier, c.getEconomics().costPerPackInr(), ecoScore(c.getEval()), c.getEval().strength()});
+        }
+        List<Double> cc = topsis.closeness(matrix, criteria);
+        for (int i = 0; i < passed.size(); i++) {
+            Candidate c = passed.get(i);
+            c.setScores(c.getScores().withTopsis(cc.get(i)));
+        }
     }
 
     /** Ranks passing candidates: by total score (then cheaper first); for MAP by closeness to the required OTR. */

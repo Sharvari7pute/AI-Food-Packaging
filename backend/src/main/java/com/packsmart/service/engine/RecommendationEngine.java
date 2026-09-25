@@ -149,7 +149,7 @@ public class RecommendationEngine {
             c.setScores(scoring.score(c, minCost, b, cond.priority(), mapOtr));
         }
 
-        List<Candidate> options = new ArrayList<>(scoring.rank(passed, req.needsMap()).stream()
+        List<Candidate> options = new ArrayList<>(scoring.rank(passed, req.needsMap(), b, cond.priority()).stream()
                 .limit(props.getTopOptions()).toList());
         if (req.needsMap() && options.isEmpty()) {
             perforatedFallback(catalog, cond, b, food, minCost, mapOtr).ifPresent(options::add);
@@ -176,7 +176,10 @@ public class RecommendationEngine {
         if (margin == null) {
             return "No barrier limit for this food, chosen on cost, eco and strength";
         }
-        return Double.isInfinite(margin) ? "Practically perfect barrier" : "Meets the barrier limits with a safety margin of ×" + Num.fmt(margin);
+        String base = Double.isInfinite(margin) ? "Practically perfect barrier" : "Meets the barrier limits with a safety margin of ×" + Num.fmt(margin);
+        return c.getScores() != null && c.getScores().topsis() != null
+                ? base + "; TOPSIS closeness " + Num.fmt(c.getScores().topsis()) + " to the ideal pack"
+                : base;
     }
 
     private Optional<Candidate> perforatedFallback(Catalog catalog, Conditions cond, BarrierRequirements b, FoodProfile food,

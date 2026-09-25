@@ -47,7 +47,10 @@ export function OptionCard({
           <h3 className="mt-1.5 truncate text-lg font-semibold" title={option.name}>
             {option.name}
           </h3>
-          <p className="text-xs text-muted-foreground">Total {num(option.totalThicknessUm)} µm · score {num(option.scores.total, 2)}</p>
+          <p className="text-xs text-muted-foreground">
+            Total {num(option.totalThicknessUm)} µm ·{" "}
+            {option.scores.topsis != null ? `TOPSIS ${num(option.scores.topsis, 2)}` : `score ${num(option.scores.total, 2)}`}
+          </p>
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold text-brand">{option.estimatedShelfLifeDays}</p>

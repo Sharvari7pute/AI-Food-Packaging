@@ -48,8 +48,10 @@ const STEPS: { title: string; text: ReactNode; tex: string[] }[] = [
   },
   {
     title: "F · Filters and scores",
-    text: "Hard filters remove packs that fail barrier, temperature, opacity, strength or heat-sealing. The rest are scored 0–1 on barrier, cost, eco and strength and weighted by your priority (Balanced 40/25/20/15, Eco 30/15/40/15, Budget 30/45/10/15).",
-    tex: [],
+    text: "Hard filters remove packs that fail barrier, temperature, opacity, strength or heat-sealing. The rest are ranked with TOPSIS: each pack is compared with an ideal and a worst pack over four criteria — barrier safety margin (log scale, capped at the over-engineering limit), cost per pack, eco score and strength — weighted by your priority (Balanced 40/25/20/15, Eco 30/15/40/15, Budget 30/45/10/15). Fresh produce is ranked by closeness to the required breathability instead.",
+    tex: [
+      String.raw`r_{ij} = \dfrac{x_{ij}}{\sqrt{\sum_i x_{ij}^2}}, \quad v_{ij} = w_j\, r_{ij}, \quad C_i = \dfrac{D_i^-}{D_i^+ + D_i^-}`,
+    ],
   },
   {
     title: "G · Shelf life",

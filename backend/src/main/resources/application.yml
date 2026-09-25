@@ -97,6 +97,7 @@ engine:
   curve-max-points: 60
   default-map-target-o2-pct: 5
   top-options: 3
+  ranking-method: topsis   # topsis | weighted
   near-miss-count: 3
   barrier-score:
     within-margin: 1.0

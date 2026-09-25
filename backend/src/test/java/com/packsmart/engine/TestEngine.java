@@ -31,7 +31,7 @@ public final class TestEngine {
     public static final LaminateService LAMINATES = new LaminateService(PROPS);
     public static final ThicknessCalculator THICKNESS = new ThicknessCalculator(PROPS, LAMINATES);
     public static final PackEconomics ECONOMICS = new PackEconomics();
-    public static final ScoringService SCORING = new ScoringService(PROPS);
+    public static final ScoringService SCORING = new ScoringService(PROPS, new com.packsmart.service.engine.TopsisRanker());
     public static final ShelfLifeService SHELF_LIFE = new ShelfLifeService(PROPS);
     public static final MapCalculator MAP = new MapCalculator(PROPS, BARRIER, THICKNESS);
     public static final RequirementService REQUIREMENTS = new RequirementService(PROPS);

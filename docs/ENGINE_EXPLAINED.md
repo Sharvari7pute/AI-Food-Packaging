@@ -104,7 +104,17 @@ The remaining packs get four scores from 0 to 1:
 | eco | biodegradable 1.0 · recyclable mono-material 0.8 · contains aluminium 0.1 · other 0.3 |
 | strength | strength ÷ 5 |
 
-Weights by priority: **Balanced** 0.40/0.25/0.20/0.15 · **Eco** 0.30/0.15/0.40/0.15 · **Budget** 0.30/0.45/0.10/0.15 (barrier/cost/eco/strength). The top 3 are shown. **Avoid** = plain LDPE 50 µm if it fails (otherwise the worst failed pack). If fewer than 3 pass, **near misses** show the best failed packs and the shelf life they *would* reach.
+Weights by priority: **Balanced** 0.40/0.25/0.20/0.15 · **Eco** 0.30/0.15/0.40/0.15 · **Budget** 0.30/0.45/0.10/0.15 (barrier/cost/eco/strength).
+
+**Ranking with TOPSIS** (`TopsisRanker`, `engine.ranking-method: topsis`). Each passing pack is scored on four criteria: barrier = 1 + log10(min(margin, 20)) (benefit; extra barrier beyond the over-engineering limit earns nothing), cost per pack (cost), eco score (benefit) and strength (benefit). Each column is normalised, multiplied by the priority weight, and every pack gets a closeness coefficient to the ideal pack:
+
+```
+r_ij = x_ij / sqrt(Σ_i x_ij²),   v_ij = w_j × r_ij
+D⁺_i = distance to the ideal (best value of each criterion),  D⁻_i = distance to the worst
+C_i  = D⁻_i / (D⁺_i + D⁻_i)      (0..1, higher is better)
+```
+
+The top 3 by C_i are shown; the card shows "TOPSIS 0.xx". Fresh produce (MAP) is still ranked by closeness to the required OTR. Setting `engine.ranking-method: weighted` switches back to the plain weighted sum. **Avoid** = plain LDPE 50 µm if it fails (otherwise the worst failed pack). If fewer than 3 pass, **near misses** show the best failed packs and the shelf life they *would* reach.
 
 ## Step G — Shelf life (`ShelfLifeService`)
 
@@ -174,7 +184,7 @@ Opaque ✓ (foil), inner layer LDPE heat-sealable ✓, usable −50 to 80 °C �
 ### F. Score
 - margin = min(0.05428/0.01389, 1.161/0.02768) = min(3.9, 41.9) = 3.9 ≤ 20 → barrier **1.0**
 - cost = 1.0 (it's the only passing pack) · eco = **0.1** (contains aluminium) · strength = 5/5 = **1.0**
-- total = 0.40×1.0 + 0.25×1.0 + 0.20×0.1 + 0.15×1.0 = **0.82**
+- weighted total = 0.40×1.0 + 0.25×1.0 + 0.20×0.1 + 0.15×1.0 = **0.82**; it is the only passing pack, so its TOPSIS closeness is **1.0**
 
 ### G. Shelf life
 - shelfLife_O2 = 0.1 / (0.01389 × 0.06 × 0.21 × 1.6245) = **351.8 days**

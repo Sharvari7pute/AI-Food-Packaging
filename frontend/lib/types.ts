@@ -59,6 +59,7 @@ export interface Scores {
   eco: number
   strength: number
   total: number
+  topsis?: number | null
 }
 
 export interface CurvePoint {

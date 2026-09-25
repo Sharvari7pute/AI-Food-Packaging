@@ -54,6 +54,8 @@ public class EngineProperties {
     private int curveMaxPoints = 60;
     private double defaultMapTargetO2Pct = 5;
     private int topOptions = 3;
+    /** "topsis" (default) or "weighted" - how passing non-MAP packs are ranked. */
+    private String rankingMethod = "topsis";
     private int nearMissCount = 3;
     private BarrierScore barrierScore = new BarrierScore();
     private EcoScore ecoScore = new EcoScore();
