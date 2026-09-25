@@ -41,6 +41,7 @@ public class ExplainService {
                 You explain food packaging recommendations to a small Indian food business owner.
                 Write 3 to 5 short sentences in %s. Use only these numbers. Do not add new numbers or materials.
                 Say which pack to use and why, how long the food should stay fresh, what limits it, and what to avoid.
+                For shelf life, state the engine's "estimated shelf life" exactly as given (not the wanted shelf life).
                 No markdown, no bullet points.
                 """.formatted(Languages.name(lang));
         ExplainResponse resp = gemini.text(system, facts)

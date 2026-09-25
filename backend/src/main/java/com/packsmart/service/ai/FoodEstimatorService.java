@@ -50,6 +50,9 @@ public class FoodEstimatorService {
                 o2Sensitive/lightSensitive are high, medium or low. respiring = true only for fresh fruits/vegetables,
                 then give respirationRate in mL O2/(kg·h) at 20 °C. category is one of: dry_snack, bakery, staple, dairy,
                 frozen, fruit, vegetable, meat, beverage, other.
+                Return one flat JSON object with these keys: name, nameHi, category, moisturePct, waterActivity (0-1),
+                criticalAw, fatPct, o2Sensitive, lightSensitive, respiring (true/false), respirationRate (only if respiring),
+                defaultShelfLifeDays, mainDeteriorationFactor (short snake_case phrase, e.g. oxidative_rancidity).
                 """;
         Map<String, Object> num = Map.of("type", "number");
         Map<String, Object> level = Map.of("type", "string", "enum", LEVELS);

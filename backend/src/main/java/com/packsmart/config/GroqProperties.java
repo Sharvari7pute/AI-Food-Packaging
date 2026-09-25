@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "groq")
 public class GroqProperties {
     private String apiKey;
-    private String model = "llama-3.3-70b-versatile";
+    private String model = "openai/gpt-oss-120b";
     private String baseUrl = "https://api.groq.com/openai/v1";
     private int timeoutSeconds = 8;
 
