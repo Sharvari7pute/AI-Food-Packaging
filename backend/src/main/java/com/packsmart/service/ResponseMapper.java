@@ -42,7 +42,8 @@ public class ResponseMapper {
         Conditions c = r.conditions();
         Requirements req = r.requirements();
         InputsEcho inputs = new InputsEcho(f.commodityId(), f.name(), f.moisturePct(), f.waterActivity(), f.criticalAw(),
-                f.fatPct(), f.o2Sensitive(), f.lightSensitive(), f.respiring(), f.respirationRate(), c.packWeightG(),
+                f.fatPct(), f.o2Sensitive(), f.lightSensitive(), f.respiring(), f.respirationRate(), f.ph(),
+                f.storageTempMinC(), f.storageTempMaxC(), f.mainDeteriorationFactor(), c.packWeightG(),
                 Num.sig(c.areaM2()), c.areaEstimated(), c.shelfLifeDays(), c.storageType().name(), c.storageTempC(),
                 c.relativeHumidityPct(), c.transport().name(), c.priority().name(), language);
         List<String> reasons = new ArrayList<>(req.reasons());

@@ -165,8 +165,10 @@ export function MethodologyPage() {
           </div>
         )}
         <p className="mt-2 text-xs text-muted-foreground">
-          Material data was researched by our team. Food properties, laminates, MAP targets, CO₂ factors and city climate are
-          placeholder values for the prototype and will be replaced with verified data.
+          Material data, food properties (IFCT 2017, USDA FoodData Central, FDA) and MAP targets (UC Davis Postharvest) were
+          researched by our team; approximate values are flagged in the data notes. Laminate structures, CO₂ factors and city
+          climate are still placeholder values. The engine agrees with the literature packaging direction for 22 of 25 foods
+          (validation report in the repository).
         </p>
       </section>
 

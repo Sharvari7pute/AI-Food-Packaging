@@ -149,6 +149,7 @@ public class CatalogService {
         return new CommodityDto(c.getId(), c.getName(), c.getNameHi(), c.getCategory(), c.getMoisturePct(),
                 c.getWaterActivity(), c.getCriticalAw(), c.getFatPct(), c.getO2Sensitive(), c.getLightSensitive(),
                 Boolean.TRUE.equals(c.getRespiring()), c.getRespirationRate(), c.getDefaultShelfLifeDays(),
+                c.getPh(), c.getStorageTempMinC(), c.getStorageTempMaxC(), c.getMainDeteriorationFactor(),
                 c.getSourceUrl(), c.getNotes(), CatalogMapper.isApprox(c.getNotes()));
     }
 

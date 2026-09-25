@@ -40,7 +40,8 @@ public class FoodEstimatorService {
             Commodity c = existing.get();
             CustomCommodity food = new CustomCommodity(c.getName(), c.getNameHi(), c.getCategory(), c.getMoisturePct(),
                     c.getWaterActivity(), c.getCriticalAw(), c.getFatPct(), c.getO2Sensitive(), c.getLightSensitive(),
-                    c.getRespiring(), c.getRespirationRate(), c.getDefaultShelfLifeDays(), false);
+                    c.getRespiring(), c.getRespirationRate(), c.getDefaultShelfLifeDays(), false, c.getPh(),
+                    c.getStorageTempMinC(), c.getStorageTempMaxC(), c.getMainDeteriorationFactor());
             return new EstimateFoodResponse(food, c.getId(), false, false, "This food is already in our database.");
         }
         String system = """
@@ -66,7 +67,8 @@ public class FoodEstimatorService {
                         Map.entry("lightSensitive", level),
                         Map.entry("respiring", Map.of("type", "boolean")),
                         Map.entry("respirationRate", num),
-                        Map.entry("defaultShelfLifeDays", Map.of("type", "integer"))),
+                        Map.entry("defaultShelfLifeDays", Map.of("type", "integer")),
+                        Map.entry("mainDeteriorationFactor", Map.of("type", "string"))),
                 "required", List.of("name", "category", "moisturePct", "waterActivity", "fatPct", "o2Sensitive",
                         "lightSensitive", "respiring", "defaultShelfLifeDays"));
         return gemini.json(system, "Food: " + n, schema)
@@ -101,7 +103,8 @@ public class FoodEstimatorService {
                     respiring,
                     respiring ? rr : null,
                     n.hasNonNull("defaultShelfLifeDays") ? Math.max(1, Math.min(730, n.get("defaultShelfLifeDays").asInt())) : null,
-                    true));
+                    true, null, null, null,
+                    n.hasNonNull("mainDeteriorationFactor") ? n.get("mainDeteriorationFactor").asText() : null));
         } catch (Exception e) {
             log.warn("Could not read Gemini food estimate: {}", e.getMessage());
             return Optional.empty();

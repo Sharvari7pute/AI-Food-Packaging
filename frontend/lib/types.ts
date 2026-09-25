@@ -27,6 +27,10 @@ export interface CustomCommodity {
   respirationRate?: number | null
   defaultShelfLifeDays?: number | null
   aiEstimated?: boolean | null
+  ph?: number | null
+  storageTempMinC?: number | null
+  storageTempMaxC?: number | null
+  mainDeteriorationFactor?: string | null
 }
 
 export interface RecommendRequest {
@@ -143,6 +147,10 @@ export interface InputsEcho {
   lightSensitive: Level | null
   respiring: boolean
   respirationRate: number | null
+  ph?: number | null
+  recommendedStorageTempMinC?: number | null
+  recommendedStorageTempMaxC?: number | null
+  mainDeteriorationFactor?: string | null
   packWeightG: number
   packAreaM2: number
   areaEstimated: boolean
@@ -198,6 +206,10 @@ export interface CommodityDto extends CommoditySummary {
   lightSensitive: Level | null
   respirationRate: number | null
   defaultShelfLifeDays: number | null
+  ph: number | null
+  storageTempMinC: number | null
+  storageTempMaxC: number | null
+  mainDeteriorationFactor: string | null
   sourceUrl: string | null
   notes: string | null
   approx: boolean

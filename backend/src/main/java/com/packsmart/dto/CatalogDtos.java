@@ -25,6 +25,10 @@ public final class CatalogDtos {
             boolean respiring,
             Double respirationRate,
             Integer defaultShelfLifeDays,
+            Double ph,
+            Double storageTempMinC,
+            Double storageTempMaxC,
+            String mainDeteriorationFactor,
             String sourceUrl,
             String notes,
             boolean approx) {

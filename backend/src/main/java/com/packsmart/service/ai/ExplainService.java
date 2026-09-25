@@ -29,6 +29,11 @@ public class ExplainService {
         Recommendation rec = recommendationId != null
                 ? recommendations.entity(recommendationId)
                 : recommendations.entityByShareId(shareId == null ? "" : shareId);
+        // Re-use a stored AI explanation in the same language: saves Gemini quota and answers instantly.
+        if (Boolean.TRUE.equals(rec.getExplanationAiUsed()) && lang.equals(rec.getExplanationLanguage())
+                && rec.getExplanation() != null) {
+            return new ExplainResponse(rec.getExplanation(), lang, true);
+        }
         RecommendResponse r = recommendations.read(rec);
 
         String facts = facts(r);
@@ -41,7 +46,9 @@ public class ExplainService {
         ExplainResponse resp = gemini.text(system, facts)
                 .map(t -> new ExplainResponse(t, lang, true))
                 .orElseGet(() -> new ExplainResponse(template(r, lang), lang, false));
-        recommendations.saveExplanation(rec.getId(), resp.text(), lang, resp.aiUsed());
+        if (resp.aiUsed() || !Boolean.TRUE.equals(rec.getExplanationAiUsed())) {
+            recommendations.saveExplanation(rec.getId(), resp.text(), lang, resp.aiUsed());
+        }
         return resp;
     }
 

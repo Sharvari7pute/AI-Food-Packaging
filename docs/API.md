@@ -10,7 +10,7 @@ Errors always look like `{ "error": "message", "details": ["field: problem", ...
 |---|---|---|
 | GET | `/api/health` | `{"status":"ok","aiEnabled":false}` |
 | GET | `/api/commodities` | `[{"id":1,"name":"Chips","nameHi":"चिप्स","category":"dry_snack","respiring":false}, …]` |
-| GET | `/api/commodities/{id}` | full food row (moisture, aw, fat, sensitivities, respiration, `approx`) |
+| GET | `/api/commodities/{id}` | full food row (moisture, aw, fat, sensitivities, respiration, `ph`, `storageTempMinC`, `storageTempMaxC`, `mainDeteriorationFactor`, `approx`) |
 | GET | `/api/materials` | all materials + `family`, `co2eKgPerKg`, `approx`, `rigid`, `ecoScore`, `referenceCostPer1000Inr` (25 µm, 100 g pack) |
 | GET | `/api/laminates` | laminates with computed `otr`, `wvtr`, temps, `recyclable`, `family`, cost/CO₂e for a 100 g reference pack |
 | GET | `/api/cities` | cities with summer/monsoon/winter temperature and RH |
@@ -44,7 +44,9 @@ Response (shortened, real numbers):
 ```json
 {
   "id": 1, "shareId": "69c76331-89e7-4efd-a8cc-f6cd3cad741b", "commodity": "Chips", "commodityHi": "चिप्स",
-  "inputs": { "packWeightG": 100, "packAreaM2": 0.06, "areaEstimated": true, "shelfLifeDays": 90, "storageTempC": 30, "...": "..." },
+  "inputs": { "packWeightG": 100, "packAreaM2": 0.06, "areaEstimated": true, "shelfLifeDays": 90, "storageTempC": 30,
+              "mainDeteriorationFactor": "oxidative_rancidity_and_moisture_uptake",
+              "recommendedStorageTempMinC": 15, "recommendedStorageTempMaxC": 25, "ph": null, "...": "..." },
   "requirements": { "o2Barrier": "HIGH", "moistureMode": "KEEP_OUT", "opaque": true, "needsMap": false,
                     "reasons": ["Fat 35% > 10% → oxygen barrier HIGH (fats turn rancid with oxygen)", "..."] },
   "requiredOtr": 0.05428, "requiredWvtr": 1.161,

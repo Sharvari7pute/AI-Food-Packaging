@@ -20,12 +20,16 @@ import { FoodCombobox } from "./food-combobox"
 import { NlBox } from "./nl-box"
 import { EstimateFoodDialog } from "./estimate-food-dialog"
 import { cn } from "@/lib/utils"
+import { humanize, tempRange } from "@/lib/format"
 
 type Season = "summer" | "monsoon" | "winter"
 type Props = { moisturePct: number | null; waterActivity: number | null; fatPct: number | null; respirationRate: number | null }
 
 /** Typical temperatures pre-filled when the storage type changes (the user can edit them). */
 const TYPICAL_TEMP: Record<StorageType, number> = { AMBIENT: 30, CHILLED: 4, FROZEN: -18 }
+/** A recommended storage maximum at or below these means frozen / chilled storage. */
+const FROZEN_MAX_C = -10
+const CHILLED_MAX_C = 15
 
 function currentSeason(): Season {
   const m = new Date().getMonth() + 1
@@ -83,6 +87,13 @@ export function RecommendWizard() {
         setCommodity(c)
         setProps({ moisturePct: c.moisturePct, waterActivity: c.waterActivity, fatPct: c.fatPct, respirationRate: c.respirationRate })
         if (c.defaultShelfLifeDays && c.respiring) setShelfLifeDays((d) => d ?? c.defaultShelfLifeDays)
+        // Pre-fill storage from the food's recommended range (user can still change it).
+        if (c.storageTempMinC != null && c.storageTempMaxC != null) {
+          const max = c.storageTempMaxC
+          const type: StorageType = max <= FROZEN_MAX_C ? "FROZEN" : max <= CHILLED_MAX_C ? "CHILLED" : "AMBIENT"
+          setStorageType(type)
+          if (type !== "AMBIENT") setStorageTempC((c.storageTempMinC + c.storageTempMaxC) / 2)
+        }
       })
       .catch((e) => toast.error((e as Error).message))
     return () => {
@@ -291,6 +302,16 @@ export function RecommendWizard() {
                       O₂ sensitivity {commodity.o2Sensitive} · light {commodity.lightSensitive}
                       {commodity.respiring ? " · fresh produce (breathes)" : ""}
                     </span>
+                  </div>
+                  <div className="mb-3 flex flex-wrap gap-2 text-xs">
+                    {commodity.mainDeteriorationFactor && (
+                      <span className="rounded-full bg-warning/20 px-2.5 py-1">Spoils mainly by: {humanize(commodity.mainDeteriorationFactor)}</span>
+                    )}
+                    {tempRange(commodity.storageTempMinC, commodity.storageTempMaxC) && (
+                      <span className="rounded-full bg-brand/10 px-2.5 py-1 text-brand">
+                        Recommended storage: {tempRange(commodity.storageTempMinC, commodity.storageTempMaxC)}
+                      </span>
+                    )}
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <Field label={t("wizard.moisture")} htmlFor="moisture">

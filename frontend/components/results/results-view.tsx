@@ -1,12 +1,12 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Ban, CheckCircle2, Eye, FlaskConical, ShieldCheck, Snowflake, Sparkles, SunDim, Truck } from "lucide-react"
+import { Ban, CheckCircle2, Eye, FlaskConical, ShieldCheck, Snowflake, Sparkles, SunDim, Thermometer, TriangleAlert, Truck } from "lucide-react"
 import type { RecommendResponse } from "@/lib/types"
 import { api } from "@/lib/api"
 import { useApi } from "@/lib/hooks"
 import { useI18n } from "@/lib/i18n"
-import { dateTime, inr, num, titleCase } from "@/lib/format"
+import { dateTime, humanize, inr, num, tempRange, titleCase } from "@/lib/format"
 import { ApproxBadge } from "@/components/common/badges"
 import { OptionCard } from "./option-card"
 import { ShelfLifeChart } from "./shelf-life-chart"
@@ -93,6 +93,8 @@ export function ResultsView({ result, readOnly = false }: { result: RecommendRes
           </div>
         )}
       </section>
+
+      <FoodFacts inputs={i} />
 
       {!readOnly && result.id != null && result.shareId && <ResultActions id={result.id} shareId={result.shareId} />}
       {readOnly && result.createdAt && (
@@ -203,6 +205,38 @@ function Stat({ label, value, unit }: { label: string; value: string; unit: stri
       <p className="text-[11px] text-white/70">{label}</p>
       <p className="truncate text-lg font-bold">{value}</p>
       <p className="truncate text-[10px] text-white/70">{unit}</p>
+    </div>
+  )
+}
+
+/** Main deterioration factor and recommended storage temperature from the food data. */
+function FoodFacts({ inputs }: { inputs: RecommendResponse["inputs"] }) {
+  const range = tempRange(inputs.recommendedStorageTempMinC, inputs.recommendedStorageTempMaxC)
+  if (!inputs.mainDeteriorationFactor && !range) return null
+  const min = inputs.recommendedStorageTempMinC
+  const max = inputs.recommendedStorageTempMaxC
+  const outside = min != null && max != null && (inputs.storageTempC < min || inputs.storageTempC > max)
+  return (
+    <div className="grid gap-3 sm:grid-cols-2" data-testid="food-facts">
+      <div className="flex items-start gap-3 rounded-2xl border bg-card p-4 shadow-sm">
+        <TriangleAlert className="mt-0.5 size-5 shrink-0 text-warning-foreground dark:text-warning" />
+        <div>
+          <p className="text-xs text-muted-foreground">Main way this food spoils</p>
+          <p className="font-semibold">{humanize(inputs.mainDeteriorationFactor)}</p>
+        </div>
+      </div>
+      <div className={cn("flex items-start gap-3 rounded-2xl border bg-card p-4 shadow-sm", outside && "border-warning/70 bg-warning/10")}>
+        <Thermometer className="mt-0.5 size-5 shrink-0 text-brand" />
+        <div>
+          <p className="text-xs text-muted-foreground">Recommended storage temperature</p>
+          <p className="font-semibold">{range ?? "-"}</p>
+          {outside && (
+            <p className="mt-1 text-xs">
+              You chose {num(inputs.storageTempC)} °C — outside the recommended range. The pack cannot fix wrong storage temperature.
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

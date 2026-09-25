@@ -179,6 +179,10 @@ public class CsvDataSeeder implements ApplicationRunner {
         c.setRespiring(bool(r, "respiring"));
         c.setRespirationRate(dbl(r, "respiration_rate"));
         c.setDefaultShelfLifeDays(integer(r, "default_shelf_life_days"));
+        c.setPh(dbl(r, "ph"));
+        c.setStorageTempMinC(dbl(r, "storage_temp_min_c"));
+        c.setStorageTempMaxC(dbl(r, "storage_temp_max_c"));
+        c.setMainDeteriorationFactor(lower(str(r, "main_deterioration_factor")));
         c.setSourceUrl(str(r, "source_url"));
         c.setNotes(str(r, "notes"));
         return c;

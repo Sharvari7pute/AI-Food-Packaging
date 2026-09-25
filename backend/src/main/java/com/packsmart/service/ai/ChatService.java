@@ -80,12 +80,13 @@ public class ChatService {
                     .append(" | ").append(l.otr()).append(" | ").append(l.wvtr()).append(" | ").append(yn(l.recyclable()))
                     .append(" | ").append(l.typicalUse()).append('\n');
         }
-        sb.append("\nFOODS (name | Hindi | category | aw | fat% | O2 sensitivity | light sensitivity | respiring | default shelf life days)\n");
+        sb.append("\nFOODS (name | Hindi | category | aw | fat% | O2 sensitivity | light sensitivity | respiring | default shelf life days | recommended storage °C | main deterioration)\n");
         for (Commodity c : catalog.commodityEntities()) {
             sb.append(c.getName()).append(" | ").append(c.getNameHi()).append(" | ").append(c.getCategory()).append(" | ")
                     .append(c.getWaterActivity()).append(" | ").append(c.getFatPct()).append(" | ").append(c.getO2Sensitive())
                     .append(" | ").append(c.getLightSensitive()).append(" | ").append(yn(c.getRespiring())).append(" | ")
-                    .append(c.getDefaultShelfLifeDays()).append('\n');
+                    .append(c.getDefaultShelfLifeDays()).append(" | ").append(c.getStorageTempMinC()).append("..")
+                    .append(c.getStorageTempMaxC()).append(" | ").append(c.getMainDeteriorationFactor()).append('\n');
         }
         sb.append("\nGLOSSARY: OTR = oxygen transmission rate (lower = better oxygen barrier). WVTR = water vapour transmission rate "
                 + "(lower = better moisture barrier). aw = water activity. MAP = modified atmosphere packaging for fresh produce.\n");
@@ -117,6 +118,8 @@ public class ChatService {
                 return prefix + c.getName() + ": water activity " + c.getWaterActivity() + ", fat " + c.getFatPct()
                         + "%, oxygen sensitivity " + c.getO2Sensitive() + ", light sensitivity " + c.getLightSensitive()
                         + (Boolean.TRUE.equals(c.getRespiring()) ? ", fresh produce that needs a breathable film (MAP)" : "")
+                        + (c.getMainDeteriorationFactor() != null ? ", mainly spoils by " + c.getMainDeteriorationFactor().replace('_', ' ') : "")
+                        + (c.getStorageTempMinC() != null ? ", store at " + c.getStorageTempMinC() + " to " + c.getStorageTempMaxC() + " °C" : "")
                         + ". Run the recommender for the exact pack.";
             }
         }

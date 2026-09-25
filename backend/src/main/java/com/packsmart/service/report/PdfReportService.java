@@ -97,6 +97,11 @@ public class PdfReportService {
         kv(inputs, "Transport", in.transport());
         kv(inputs, "Water activity", fmt(in.waterActivity()));
         kv(inputs, "Fat", fmt(in.fatPct()) + " %");
+        if (in.mainDeteriorationFactor() != null || in.recommendedStorageTempMinC() != null) {
+            kv(inputs, "Main spoilage", in.mainDeteriorationFactor() != null ? in.mainDeteriorationFactor().replace('_', ' ') : "-");
+            kv(inputs, "Recommended storage", in.recommendedStorageTempMinC() != null && in.recommendedStorageTempMaxC() != null
+                    ? fmt(in.recommendedStorageTempMinC()) + " to " + fmt(in.recommendedStorageTempMaxC()) + " °C" : "-");
+        }
         doc.add(inputs);
 
         section(doc, "2. Decision trace - why these requirements");

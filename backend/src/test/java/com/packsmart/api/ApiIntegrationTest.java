@@ -68,10 +68,12 @@ class ApiIntegrationTest {
 
     @Test
     void catalogEndpointsServeSeededData() throws Exception {
-        mvc.perform(get("/api/commodities")).andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(14)))
+        mvc.perform(get("/api/commodities")).andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(25)))
                 .andExpect(jsonPath("$[0].nameHi").value("चिप्स"));
         mvc.perform(get("/api/commodities/" + id("Paneer"))).andExpect(status().isOk())
-                .andExpect(jsonPath("$.waterActivity").value(0.97));
+                .andExpect(jsonPath("$.waterActivity").value(0.973))
+                .andExpect(jsonPath("$.mainDeteriorationFactor").value("microbial_spoilage"))
+                .andExpect(jsonPath("$.storageTempMinC").value(3.0));
         mvc.perform(get("/api/materials")).andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(16)))
                 .andExpect(jsonPath("$[0].name").value("LDPE"))
                 .andExpect(jsonPath("$[0].approx").value(true))
@@ -87,6 +89,8 @@ class ApiIntegrationTest {
     void chipsRecommendationEndToEnd() throws Exception {
         JsonNode r = recommend(request("Chips", 100, 90, "AMBIENT", 30, 70));
         assertThat(r.get("id").asLong()).isPositive();
+        assertThat(r.get("inputs").get("mainDeteriorationFactor").asText()).isEqualTo("oxidative_rancidity_and_moisture_uptake");
+        assertThat(r.get("inputs").get("recommendedStorageTempMaxC").asDouble()).isEqualTo(25.0);
         assertThat(r.get("requirements").get("o2Barrier").asText()).isEqualTo("HIGH");
         assertThat(r.get("requirements").get("moistureMode").asText()).isEqualTo("KEEP_OUT");
         assertThat(r.get("requirements").get("opaque").asBoolean()).isTrue();
@@ -120,8 +124,8 @@ class ApiIntegrationTest {
     }
 
     @Test
-    void tamatarGetsMapPanel() throws Exception {
-        JsonNode r = recommend(request("Tamatar", 500, 7, "CHILLED", 12, 90));
+    void tomatoGetsMapPanel() throws Exception {
+        JsonNode r = recommend(request("Tomato", 500, 7, "CHILLED", 12, 90));
         assertThat(r.get("requirements").get("needsMap").asBoolean()).isTrue();
         JsonNode map = r.get("map");
         assertThat(map.get("targetO2Min").asDouble()).isEqualTo(3);
@@ -152,7 +156,7 @@ class ApiIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", nullValue()))
                 .andExpect(jsonPath("$.shareId", nullValue()))
-                .andExpect(jsonPath("$.requiredOtr", nullValue()))
+                .andExpect(jsonPath("$.requiredWvtr", notNullValue()))
                 .andExpect(jsonPath("$.options[0].name", notNullValue()));
     }
 

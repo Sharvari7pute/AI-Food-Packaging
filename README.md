@@ -75,7 +75,8 @@ cd frontend && npm run lint && npm run build && npm run test:e2e   # Playwright 
 | backend | `DB_URL`, `DB_USER`, `DB_PASSWORD` | Supabase session pooler (JDBC URL) |
 | backend | `FRONTEND_URL` | CORS origin + link inside QR codes (e.g. `https://packsmart-frontend.onrender.com`) |
 | backend | `GEMINI_API_KEY` | optional; without it every AI feature falls back |
-| backend | `GEMINI_MODEL` | default `gemini-2.5-flash` |
+| backend | `GEMINI_MODEL` | default `gemini-3.8-flash` (`gemini-2.5-flash` is retired for new keys) |
+| backend | `GEMINI_THINKING_LEVEL` | default `low` (keeps Gemini 3 answers under the 8 s timeout) |
 | backend | `RESEED_ON_START` | `true` once to reload the data tables from the CSVs |
 | backend | `PORT` | set automatically by Render (default 8080) |
 | frontend | `NEXT_PUBLIC_API_URL` | backend base URL |
@@ -84,10 +85,12 @@ Secrets never go into git: only the `.env.example` files are committed.
 
 ## Replacing dummy data with verified data
 
-`materials.csv` is **real** team data. `material_extras.csv`, `laminates.csv`, `commodities.csv`, `map_targets.csv` and `cities.csv` are **placeholders**.
+`materials.csv`, `commodities.csv` (25 foods, incl. pH, recommended storage temperature and main deterioration factor) and `map_targets.csv` are **real** team data. `material_extras.csv` (CO₂ factors), `laminates.csv` and `cities.csv` are still **placeholders**.
+
+`data-files/commodity_validation.csv` is **not** loaded into the app. It is used only by `CommodityValidationTest`, which checks the engine's output against literature packaging directions (**22 of 25 match**, see [docs/VALIDATION_REPORT.md](docs/VALIDATION_REPORT.md)).
 
 1. Edit the file in `backend/src/main/resources/data/`, keeping the **same columns** (header row, comma-separated, UTF-8, `yes`/`no` booleans, empty cell = unknown). Material names are the join key between files, so spell them exactly the same. Laminate layers look like `PET:12;Aluminium foil:9;LDPE:50` (outside → inside). Put `approx` or `VERIFY` in a material's notes to show an "approx" badge.
-2. Keep `data-files/materials.csv` in sync with the copy in `backend/src/main/resources/data/`.
+2. Keep the CSVs in `data-files/` in sync with the copies in `backend/src/main/resources/data/`.
 3. Run `./mvnw test`, then commit and push.
 4. Because the database is shared, run the backend **once** with `RESEED_ON_START=true` (locally in `.env` or on Render). This deletes and reloads only the data tables (never `recommendations`). Then set it back to `false`.
 
@@ -99,7 +102,7 @@ Bad rows are logged and skipped, never crashing the app. Startup also warns abou
 
 1. Push to GitHub. In Render, go to **New → Blueprint** and pick this repo. Render reads `render.yaml` and creates `packsmart-backend` (Docker) and `packsmart-frontend` (Node).
 2. Fill in the env vars Render asks for:
-   - backend: `DB_URL`, `DB_USER`, `DB_PASSWORD`, `GEMINI_API_KEY` (optional), `GEMINI_MODEL` = `gemini-2.5-flash`, `RESEED_ON_START` = `false`, `FRONTEND_URL` (any placeholder for now)
+   - backend: `DB_URL`, `DB_USER`, `DB_PASSWORD`, `GEMINI_API_KEY` (optional), `GEMINI_MODEL` = `gemini-3.8-flash`, `RESEED_ON_START` = `false`, `FRONTEND_URL` (any placeholder for now)
    - frontend: `NEXT_PUBLIC_API_URL` (placeholder for now)
 3. Deploy. Then set backend `FRONTEND_URL` = the frontend URL and frontend `NEXT_PUBLIC_API_URL` = the backend URL, and **redeploy both**. `NEXT_PUBLIC_*` is baked in at build time, so the frontend needs a rebuild.
 4. Check `https://<backend>/api/health`.
@@ -111,5 +114,6 @@ Free Render services sleep after ~15 minutes idle, so the first request then tak
 - [docs/ENGINE_EXPLAINED.md](docs/ENGINE_EXPLAINED.md): every formula in simple words, plus a full Chips worked example
 - [docs/API.md](docs/API.md): endpoints with sample requests and responses
 - [docs/DECISIONS.md](docs/DECISIONS.md): assumptions made during the build
+- [docs/VALIDATION_REPORT.md](docs/VALIDATION_REPORT.md): engine vs literature packaging directions for all 25 foods
 
 _Prototype estimates from literature data. Validate with lab shelf-life tests._

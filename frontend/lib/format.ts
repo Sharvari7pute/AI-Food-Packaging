@@ -27,3 +27,15 @@ export function titleCase(s: string): string {
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ")
 }
+
+/** "oxidative_rancidity_and_moisture_uptake" → "Oxidative rancidity and moisture uptake" */
+export function humanize(s: string | null | undefined): string {
+  if (!s) return "-"
+  const t = s.replace(/_/g, " ").trim()
+  return t.charAt(0).toUpperCase() + t.slice(1)
+}
+
+export function tempRange(min: number | null | undefined, max: number | null | undefined): string | null {
+  if (min == null || max == null) return null
+  return min === max ? `${min} °C` : `${min} to ${max} °C`
+}

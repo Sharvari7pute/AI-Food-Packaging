@@ -33,8 +33,12 @@ public class Commodity {
     private Boolean respiring;
     private Double respirationRate;
     private Integer defaultShelfLifeDays;
-    @Column(length = 1000)
+    private Double ph;
+    private Double storageTempMinC;
+    private Double storageTempMaxC;
+    private String mainDeteriorationFactor;
+    @Column(columnDefinition = "text")
     private String sourceUrl;
-    @Column(length = 1000)
+    @Column(columnDefinition = "text")
     private String notes;
 }

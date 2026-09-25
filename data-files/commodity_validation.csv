@@ -1,0 +1,26 @@
+name,recommended_packaging_form,recommended_packaging_direction,main_deterioration_factor,source_url
+Chips,nitrogen_flushed_pouch,high_oxygen_and_moisture_barrier,oxidative_rancidity_and_moisture_uptake,https://fdc.nal.usda.gov/fdc-app.html#/food-details/169677/nutrients
+Namkeen,laminated_pouch,high_oxygen_and_moisture_barrier,oxidative_rancidity_and_loss_of_crispness,https://pmc.ncbi.nlm.nih.gov/articles/PMC6443744/
+Biscuit,laminated_pouch,moisture_barrier,moisture_uptake_loss_of_crispness,https://fdc.nal.usda.gov/fdc-app.html#/food-details/174950/nutrients
+Milk,pouch,light_barrier,microbial_spoilage_and_light_induced_off_flavour,https://www.nin.res.in/ebooks/IFCT2017.pdf
+Paneer,vacuum_pack,high_barrier_vacuum,microbial_spoilage,https://www.nin.res.in/ebooks/IFCT2017.pdf
+Ghee,glass_jar,light_and_oxygen_barrier,oxidative_rancidity,https://www.nin.res.in/ebooks/IFCT2017.pdf
+Cheese,vacuum_pack,oxygen_barrier,mould_growth_and_oxidation,https://fdc.nal.usda.gov/fdc-app.html#/food-details/170853/nutrients
+Bread,pouch,moisture_retention,staling_and_mould_growth,https://fdc.nal.usda.gov/fdc-app.html#/food-details/174924/nutrients
+Cake,laminated_pouch,moisture_retention,mould_growth_and_staling,https://fdc.nal.usda.gov/fdc-app.html#/food-details/174940/nutrients
+Atta,laminated_pouch,moisture_barrier,hydrolytic_and_oxidative_rancidity_and_insects,https://www.nin.res.in/ebooks/IFCT2017.pdf
+Rice,pouch,moisture_barrier,insect_infestation_and_moisture_uptake,https://www.nin.res.in/ebooks/IFCT2017.pdf
+Dal,pouch,moisture_barrier,insect_infestation_and_moisture_uptake,https://www.nin.res.in/ebooks/IFCT2017.pdf
+Masala Powder,laminated_pouch,light_and_oxygen_barrier,aroma_loss_colour_fading_and_caking,https://fdc.nal.usda.gov/fdc-app.html#/food-details/170924/nutrients
+Tomato,perforated_film,MAP,over_ripening_softening_and_fungal_decay,https://postharvest.ucdavis.edu/produce-facts-sheets/tomato
+Apple,perforated_pouch,breathable,softening_moisture_loss_and_decay,https://postharvest.ucdavis.edu/sites/g/files/dgvnsk12711/files/inline-files/230191.pdf
+Banana,perforated_pouch,MAP,ripening_and_crown_rot,https://postharvest.ucdavis.edu/produce-facts-sheets/banana
+Mango,tray,MAP,ripening_anthracnose_and_stem_end_rot,https://postharvest.ucdavis.edu/produce-facts-sheets/mango
+Grapes,clamshell,breathable,grey_mould_botrytis_and_stem_browning,https://postharvest.ucdavis.edu/produce-facts-sheets/grape
+Spinach,perforated_pouch,MAP,wilting_yellowing_and_bacterial_soft_rot,https://postharvest.ucdavis.edu/produce-facts-sheets/spinach
+Carrot,perforated_pouch,moisture_retention,moisture_loss_wilting_and_decay,https://postharvest.ucdavis.edu/produce-facts-sheets/carrot
+Capsicum,perforated_film,MAP,moisture_loss_softening_and_grey_mould,https://postharvest.ucdavis.edu/produce-facts-sheets/bell-pepper
+Pickle,glass_jar,oxygen_barrier,yeast_mould_growth_and_oil_rancidity,https://www.chemijournal.com/archives/2018/vol6issue2/PartAC/6-2-85-865.pdf
+Coffee Powder,glass_jar,high_oxygen_and_moisture_barrier,moisture_uptake_caking_and_aroma_loss,https://fdc.nal.usda.gov/fdc-app.html#/food-details/171893/nutrients
+Frozen Peas,freezer_pouch,freezer_barrier,freezer_burn_and_oxidative_quality_loss,https://fdc.nal.usda.gov/fdc-app.html#/food-details/170016/nutrients
+Chicken,sealed_tray,MAP,microbial_spoilage,https://www.nin.res.in/ebooks/IFCT2017.pdf

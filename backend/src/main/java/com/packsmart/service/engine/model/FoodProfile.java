@@ -15,5 +15,9 @@ public record FoodProfile(
         boolean respiring,
         Double respirationRate,
         Integer defaultShelfLifeDays,
-        boolean aiEstimated) {
+        boolean aiEstimated,
+        Double ph,
+        Double storageTempMinC,
+        Double storageTempMaxC,
+        String mainDeteriorationFactor) {
 }

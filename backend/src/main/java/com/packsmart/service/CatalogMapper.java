@@ -106,7 +106,8 @@ public final class CatalogMapper {
         return new FoodProfile(c.getId(), c.getName(), c.getNameHi(), c.getCategory(), c.getMoisturePct(),
                 c.getWaterActivity(), c.getCriticalAw(), orDefault(c.getFatPct(), 0), c.getO2Sensitive(),
                 c.getLightSensitive(), Boolean.TRUE.equals(c.getRespiring()), c.getRespirationRate(),
-                c.getDefaultShelfLifeDays(), false);
+                c.getDefaultShelfLifeDays(), false, c.getPh(), c.getStorageTempMinC(), c.getStorageTempMaxC(),
+                c.getMainDeteriorationFactor());
     }
 
     private static double orDefault(Double v, double d) {

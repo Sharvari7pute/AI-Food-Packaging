@@ -61,10 +61,13 @@ public class QueryParserService {
     private final ObjectMapper json;
 
     public ParseResponse parse(String query) {
+        Draft keywords = keywordParse(query);
         Draft draft = gemini.isEnabled() ? aiParse(query).orElse(null) : null;
         boolean aiUsed = draft != null;
         if (draft == null) {
-            draft = keywordParse(query);
+            draft = keywords;
+        } else {
+            fillGaps(draft, keywords);
         }
         List<String> notes = new ArrayList<>();
         applyCity(query, draft, notes);
@@ -72,7 +75,7 @@ public class QueryParserService {
         Long commodityId = null;
         String commodityName = null;
         if (draft.commodity != null) {
-            Optional<Commodity> c = catalog.commodityByName(draft.commodity);
+            Optional<Commodity> c = findCommodity(draft.commodity);
             if (c.isPresent()) {
                 commodityId = c.get().getId();
                 commodityName = c.get().getName();
@@ -114,31 +117,62 @@ public class QueryParserService {
         Transport transport;
     }
 
+    /** The AI may answer "Atta (आटा)" or the Hindi name: match on English name, the part before "(", or Hindi name. */
+    private Optional<Commodity> findCommodity(String answer) {
+        String a = answer.trim();
+        String english = a.contains("(") ? a.substring(0, a.indexOf('(')).trim() : a;
+        return catalog.commodityEntities().stream()
+                .filter(c -> c.getName().equalsIgnoreCase(a) || c.getName().equalsIgnoreCase(english)
+                        || (c.getNameHi() != null && a.contains(c.getNameHi())))
+                .findFirst();
+    }
+
+    /** Anything the AI left empty is filled from the keyword matcher (numbers with units, storage words, food names). */
+    private static void fillGaps(Draft ai, Draft kw) {
+        if (ai.commodity == null) {
+            ai.commodity = kw.commodity;
+        }
+        if (ai.weightG == null) {
+            ai.weightG = kw.weightG;
+        }
+        if (ai.days == null) {
+            ai.days = kw.days;
+        }
+        if (ai.storage == null) {
+            ai.storage = kw.storage;
+        }
+        if (ai.tempC == null) {
+            ai.tempC = kw.tempC;
+        }
+        if (ai.rh == null) {
+            ai.rh = kw.rh;
+        }
+        if (ai.transport == null) {
+            ai.transport = kw.transport;
+        }
+    }
+
     // ------------------------------------------------------------------ Gemini path
 
     private Optional<Draft> aiParse(String query) {
         List<String> names = catalog.commodityEntities().stream()
-                .map(c -> c.getName() + (c.getNameHi() != null ? " (" + c.getNameHi() + ")" : ""))
+                .map(c -> c.getName() + (c.getNameHi() != null ? " [Hindi: " + c.getNameHi() + "]" : ""))
                 .toList();
         String system = """
                 You convert an Indian food business owner's message (English, Hindi, Hinglish or Marathi) into form fields
-                for a packaging tool. Return JSON only. Map the food to EXACTLY one name from this list, or omit
+                for a packaging tool. Return JSON only. Map the food to EXACTLY one English name from this list (return
+                only the English name, without the Hindi part), or omit
                 "commodity" if nothing matches: %s.
                 Rules: packWeightG in grams; shelfLifeDays in days (1 week = 7, 1 month = 30);
                 storageType AMBIENT (room/shelf), CHILLED (fridge) or FROZEN (freezer); storageTempC only if a temperature
                 is stated; relativeHumidityPct only if humidity is stated; transport LONG_DISTANCE only if shipping far,
                 else LOCAL. Omit any field that is not in the message. Never guess numbers.
+                Return one flat JSON object with only these keys: commodity (string), packWeightG (number),
+                shelfLifeDays (integer), storageType ("AMBIENT"|"CHILLED"|"FROZEN"), storageTempC (number),
+                relativeHumidityPct (number), transport ("LOCAL"|"LONG_DISTANCE").
                 """.formatted(String.join(", ", names));
-        Map<String, Object> schema = Map.of(
-                "type", "object",
-                "properties", Map.of(
-                        "commodity", Map.of("type", "string"),
-                        "packWeightG", Map.of("type", "number"),
-                        "shelfLifeDays", Map.of("type", "integer"),
-                        "storageType", Map.of("type", "string", "enum", List.of("AMBIENT", "CHILLED", "FROZEN")),
-                        "storageTempC", Map.of("type", "number"),
-                        "relativeHumidityPct", Map.of("type", "number"),
-                        "transport", Map.of("type", "string", "enum", List.of("LOCAL", "LONG_DISTANCE"))));
+        // JSON mode without a response schema: noticeably faster on Gemini 3 and every field is validated below.
+        Map<String, Object> schema = Map.of();
         return gemini.json(system, query, schema).flatMap(text -> {
             try {
                 JsonNode n = json.readTree(text);

@@ -66,7 +66,8 @@ public class RecommendationEngine {
         return new FoodProfile(null, c.name().trim(), c.nameHi(), c.category(), c.moisturePct(), c.waterActivity(),
                 c.criticalAw(), c.fatPct(), c.o2Sensitive() != null ? c.o2Sensitive() : "medium",
                 c.lightSensitive() != null ? c.lightSensitive() : "medium", Boolean.TRUE.equals(c.respiring()),
-                c.respirationRate(), c.defaultShelfLifeDays(), Boolean.TRUE.equals(c.aiEstimated()));
+                c.respirationRate(), c.defaultShelfLifeDays(), Boolean.TRUE.equals(c.aiEstimated()), c.ph(),
+                c.storageTempMinC(), c.storageTempMaxC(), c.mainDeteriorationFactor());
     }
 
     public static FoodProfile applyOverrides(FoodProfile f, Overrides o) {
@@ -80,7 +81,8 @@ public class RecommendationEngine {
                 o.fatPct() != null ? o.fatPct() : f.fatPct(),
                 f.o2Sensitive(), f.lightSensitive(), f.respiring(),
                 o.respirationRate() != null ? o.respirationRate() : f.respirationRate(),
-                f.defaultShelfLifeDays(), f.aiEstimated());
+                f.defaultShelfLifeDays(), f.aiEstimated(), f.ph(), f.storageTempMinC(), f.storageTempMaxC(),
+                f.mainDeteriorationFactor());
     }
 
     /** Conditions with the pack area resolved ({@code area = 0.02 + 0.0004 × packWeightG} when not given). */

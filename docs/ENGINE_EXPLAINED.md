@@ -36,7 +36,9 @@ Lower OTR or WVTR means a better barrier.
 | storage FROZEN | every layer must work at ≤ −25 °C |
 | transport LONG_DISTANCE | strength ≥ 3/5 |
 
-*Why is the fat rule limited to aw ≤ 0.9?* Moist foods like paneer are spoiled by microbes long before their fat goes rancid. See `docs/DECISIONS.md` #5.
+*Why is the fat rule limited to aw ≤ 0.9?* Moist foods like paneer (fat 14.8 %, aw 0.973) are spoiled by microbes long before their fat goes rancid. See `docs/DECISIONS.md` #5.
+
+The food data also gives each food's **main deterioration factor** and **recommended storage temperature** (e.g. paneer: microbial spoilage, 3–5 °C). These are shown on the results page and the PDF, with a warning when the chosen temperature is outside the range. They inform the user but don't change the barrier maths.
 
 ## Step B — How good must the barrier be? (`BarrierCalculator`)
 
@@ -128,16 +130,16 @@ OTR_required_map    = RR_total_mL_per_day / (area × (0.21 − targetO2 / 100))
 
 Among heat-sealable films and thicknesses, the one with OTR ≥ the requirement and **closest** to it wins (too much OTR lets in extra oxygen). If none breathes enough → LDPE 25 µm with micro-perforations.
 
-*Example (Tamatar, 500 g, 12 °C):* RR = 15 × 0.5 × 24 × 0.574 = 103.4 mL/day → OTR_required_map = 103.4 / (0.22 × 0.17) = **2764** → **LLDPE 60 µm** (OTR 3125). Target gas mix 4 % O₂, 4 % CO₂, 92 % N₂.
+*Example (Tomato, 500 g, 12 °C):* RR = 17.5 × 0.5 × 24 × 0.574 = 120.6 mL/day → OTR_required_map = 120.6 / (0.22 × 0.17) = **3225** → **LDPE 60 µm** (OTR 3281). Target gas mix 4 % O₂, 4 % CO₂, 92 % N₂ (UC Davis: 3–5 % O₂, 3–5 % CO₂).
 
 ---
 
 ## Full worked example — Chips
 
-**Input:** Chips (fat 35 %, aw 0.20, O₂ sensitivity high, light sensitivity high), 100 g pack, 90 days, ambient 30 °C, 70 % RH, local transport, balanced priority.
+**Input:** Chips (fat 34 %, aw 0.20, O₂ sensitivity high, light sensitivity high), 100 g pack, 90 days, ambient 30 °C, 70 % RH, local transport, balanced priority.
 
 ### A. Requirements
-- Fat 35 % > 10 % and O₂ sensitivity high → **oxygen barrier HIGH**
+- Fat 34 % > 10 % and O₂ sensitivity high → **oxygen barrier HIGH**
 - aw 0.20 < 0.70 → **KEEP_OUT** moisture
 - Light-sensitive → **opaque**
 
@@ -185,9 +187,13 @@ Opaque ✓ (foil), inner layer LDPE heat-sealable ✓, usable −50 to 80 °C �
 
 ---
 
+## Validation against literature
+
+`CommodityValidationTest` runs the engine for all 25 foods with default inputs and compares the derived requirements with the packaging direction in `commodity_validation.csv` (literature). **22 of 25 match.** See [VALIDATION_REPORT.md](VALIDATION_REPORT.md). The validation file is never fed into the engine.
+
 ## Likely judge questions
 
 - **"Why not just trust the AI?"** LLMs make up numbers. Our engine is deterministic and auditable: the same input always gives the same answer, with every reason shown. Gemini only translates and explains.
-- **"Where does the data come from?"** Material OTR/WVTR values were researched by our team (sources on the Methodology page and in the PDF). Rows marked approx/VERIFY are still being checked. Food, laminate, MAP and city data are placeholders to be replaced with verified data (same CSV columns).
+- **"Where does the data come from?"** Material OTR/WVTR values were researched by our team (sources on the Methodology page and in the PDF). Rows marked approx/VERIFY are still being checked. Food properties (IFCT 2017, USDA FDC, FDA) and MAP targets (UC Davis) are now sourced too, with notes on every approximate value. Laminates, CO₂ factors and city climate are still placeholders.
 - **"How accurate is the shelf life?"** It's a first estimate from literature data. It ignores seals, pinholes and microbial growth, so it must be confirmed with lab shelf-life tests (this is printed on every spec sheet).
 - **"What happens offline / without an AI key?"** Everything still works. The parser uses keyword matching, explanations use templates, and Pack-Bot answers from database lookups and an FAQ.

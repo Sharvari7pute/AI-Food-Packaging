@@ -35,12 +35,14 @@ class EngineScenarioTest {
     @Test
     void atta() {
         EngineResult r = TestEngine.run("Atta", 1000, 90, StorageType.AMBIENT, 30, 70);
+        // Real data: atta is medium O2-sensitive (hydrolytic/oxidative rancidity), so an OTR limit now applies too.
         assertThat(r.requirements().moistureMode()).isEqualTo(MoistureMode.KEEP_OUT);
-        assertThat(r.barrier().requiredOtr()).isNull();
+        assertThat(r.requirements().o2Barrier()).isEqualTo(O2Barrier.MEDIUM);
         assertThat(r.barrier().requiredWvtr()).isNotNull();
         assertThat(r.options()).isNotEmpty();
         for (Candidate c : r.options()) {
             assertThat(c.getEval().wvtr()).isLessThanOrEqualTo(r.barrier().requiredWvtr());
+            assertThat(c.getEval().otr()).isLessThanOrEqualTo(r.barrier().requiredOtr());
         }
     }
 
@@ -58,7 +60,7 @@ class EngineScenarioTest {
 
     @Test
     void frozenMatar() {
-        EngineResult r = TestEngine.run("Frozen matar", 500, 180, StorageType.FROZEN, -18, 70);
+        EngineResult r = TestEngine.run("Frozen Peas", 500, 180, StorageType.FROZEN, -18, 70);
         assertThat(r.requirements().frozen()).isTrue();
         assertThat(r.options()).isNotEmpty();
         for (Candidate c : r.options()) {
@@ -70,8 +72,8 @@ class EngineScenarioTest {
     }
 
     @Test
-    void tamatarUsesMap() {
-        EngineResult r = TestEngine.run("Tamatar", 500, 7, StorageType.CHILLED, 12, 90);
+    void tomatoUsesMap() {
+        EngineResult r = TestEngine.run("Tomato", 500, 7, StorageType.CHILLED, 12, 90);
         assertThat(r.requirements().needsMap()).isTrue();
         assertThat(r.requirements().moistureMode()).isEqualTo(MoistureMode.BREATHABLE);
         assertThat(r.map()).isNotNull();
