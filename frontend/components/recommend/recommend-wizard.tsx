@@ -224,7 +224,7 @@ export function RecommendWizard() {
     <Container className="max-w-4xl">
       <PageHeader title={t("wizard.title")} description="Two ways in: describe it in your own words, or fill three quick steps." />
 
-      <section className="mb-8 rounded-2xl border bg-gradient-to-br from-accent/60 to-card p-5 shadow-sm">
+      <section className="mb-8 rounded-2xl border bg-accent/50 p-5 shadow-sm">
         <h2 className="mb-3 flex items-center gap-2 font-semibold">
           <Wand /> {t("wizard.describe")}
         </h2>

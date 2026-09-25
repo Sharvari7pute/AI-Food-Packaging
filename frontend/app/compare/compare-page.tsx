@@ -169,7 +169,7 @@ export function ComparePage({ recommendationId }: { recommendationId: number | n
                           aria-pressed={idx >= 0}
                           className={cn(
                             "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-                            idx >= 0 ? "border-transparent text-white" : "text-muted-foreground hover:text-foreground",
+                            idx >= 0 ? "border-transparent text-background" : "text-muted-foreground hover:text-foreground",
                           )}
                           style={idx >= 0 ? { background: COLORS[idx] } : undefined}
                         >

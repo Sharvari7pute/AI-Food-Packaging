@@ -1,20 +1,18 @@
 "use client"
 
-import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
 
+/** Round toggle: a filled dot (light) / ring (dark), like the design. */
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <button
+      type="button"
       aria-label="Toggle dark mode"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      className="ml-2 grid size-9 place-items-center rounded-full border border-border bg-card shadow-sm transition-colors hover:border-foreground/30"
     >
-      <Sun className="hidden dark:block" />
-      <Moon className="dark:hidden" />
-    </Button>
+      <span className="size-3.5 rounded-full bg-foreground transition-all dark:bg-transparent dark:ring-2 dark:ring-foreground" />
+    </button>
   )
 }

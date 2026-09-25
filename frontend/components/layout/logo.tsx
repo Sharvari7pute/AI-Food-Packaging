@@ -1,17 +1,25 @@
+import Image from "next/image"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 
-export function Logo({ className = "" }: { className?: string }) {
+/** AnnKAVACH logo (image on a white tile so it reads well on cream and in dark mode). */
+export function Logo({ className = "", size = "md" }: { className?: string; size?: "sm" | "md" }) {
+  const h = size === "sm" ? 44 : 64
   return (
-    <Link href="/" className={`flex items-center gap-2 font-semibold tracking-tight ${className}`} aria-label="PackSmart home">
-      <span className="grid size-8 place-items-center rounded-lg bg-gradient-to-br from-primary to-brand text-primary-foreground shadow-sm">
-        <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-          <path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z" strokeLinejoin="round" />
-          <path d="M3 7.5 12 12l9-4.5M12 12v9" strokeLinejoin="round" />
-        </svg>
-      </span>
-      <span className="text-lg">
-        Pack<span className="text-primary">Smart</span>
-      </span>
+    <Link
+      href="/"
+      aria-label="AnnKAVACH - home"
+      className={cn("inline-flex shrink-0 items-center rounded-md bg-white px-2 py-1 shadow-sm ring-1 ring-black/5", className)}
+    >
+      <Image
+        src="/brand/annkavach-logo.png"
+        alt="AnnKAVACH - Right Packaging for Every Food"
+        width={Math.round((h * 488) / 418)}
+        height={h}
+        priority
+        className="h-auto"
+        style={{ height: h, width: "auto" }}
+      />
     </Link>
   )
 }

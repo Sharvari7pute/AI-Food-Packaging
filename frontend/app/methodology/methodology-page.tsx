@@ -95,8 +95,8 @@ export function MethodologyPage() {
           <FlowArrow />
           <FlowBox icon={<FileText className="size-5" />} title="Result + spec PDF" text="Options, shelf life, cost, CO₂, QR-verified spec sheet" />
         </div>
-        <div className="mt-4 rounded-xl border border-dashed border-violet-400/60 bg-violet-50/60 p-4 text-sm dark:bg-violet-500/5">
-          <div className="flex items-center gap-2 font-semibold text-violet-700 dark:text-violet-300">
+        <div className="mt-4 rounded-xl border border-dashed border-brand/50 bg-brand/5 p-4 text-sm">
+          <div className="flex items-center gap-2 font-semibold text-brand">
             <Bot className="size-5" /> Gemini (optional helper)
           </div>
           <ul className="mt-2 grid gap-1 text-muted-foreground sm:grid-cols-2">

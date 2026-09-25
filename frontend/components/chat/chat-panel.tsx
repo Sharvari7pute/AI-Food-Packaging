@@ -91,7 +91,7 @@ export function ChatPanel({ recommendationId, compact = false }: { recommendatio
             <div
               className={cn(
                 "grid size-8 shrink-0 place-items-center rounded-full",
-                m.role === "user" ? "bg-brand/15 text-brand" : "bg-primary/15 text-primary",
+                m.role === "user" ? "bg-brand/15 text-brand" : "bg-accent text-accent-foreground",
               )}
             >
               {m.role === "user" ? <User className="size-4" /> : <Bot className="size-4" />}
@@ -99,7 +99,7 @@ export function ChatPanel({ recommendationId, compact = false }: { recommendatio
             <div
               className={cn(
                 "max-w-[85%] space-y-1.5 whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm",
-                m.role === "user" ? "rounded-tr-sm bg-brand text-brand-foreground" : "rounded-tl-sm bg-muted",
+                m.role === "user" ? "rounded-tr-sm bg-forest text-forest-foreground dark:bg-accent dark:text-accent-foreground" : "rounded-tl-sm bg-muted",
               )}
             >
               {m.role === "assistant" && m.aiUsed && <AiTag />}

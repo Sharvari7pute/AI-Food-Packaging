@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 export function LanguageToggle() {
   const { lang, setLang } = useI18n()
   return (
-    <div className="flex items-center rounded-lg border bg-muted/50 p-0.5" role="group" aria-label="Language">
+    <div className="flex items-center gap-3" role="group" aria-label="Language">
       {LANGS.map((l) => (
         <button
           key={l.code}
@@ -15,11 +15,11 @@ export function LanguageToggle() {
           aria-pressed={lang === l.code}
           title={l.label}
           className={cn(
-            "rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition-colors",
-            lang === l.code && "bg-background text-foreground shadow-sm",
+            "text-sm text-muted-foreground transition-colors hover:text-foreground",
+            lang === l.code && "font-semibold text-foreground",
           )}
         >
-          {l.short}
+          {l.code === "en" ? "EN" : l.code === "hi" ? "हि" : "मराठी"}
         </button>
       ))}
     </div>

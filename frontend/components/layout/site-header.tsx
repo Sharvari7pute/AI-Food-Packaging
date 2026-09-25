@@ -26,36 +26,39 @@ export function SiteHeader() {
   const { t } = useI18n()
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const active = (href: string) => pathname.startsWith(href) || (href === "/recommend" && pathname === "/")
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
-        <Logo />
-        <nav className="ml-4 hidden items-center gap-1 lg:flex" aria-label="Main">
+    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="mx-auto flex h-[76px] max-w-7xl items-center gap-4 px-4 sm:px-6">
+        <Logo size="sm" className="sm:hidden" />
+        <Logo className="hidden sm:inline-flex" />
+        <nav className="ml-auto hidden items-center gap-6 xl:flex" aria-label="Main">
           {NAV.map((n) => (
             <Link
               key={n.href}
               href={n.href}
               className={cn(
-                "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-                pathname.startsWith(n.href) && "bg-accent text-accent-foreground",
+                "relative py-2 text-sm text-muted-foreground transition-colors hover:text-foreground",
+                active(n.href) &&
+                  "text-foreground after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-brand",
               )}
             >
               {t(n.key)}
             </Link>
           ))}
         </nav>
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-2 xl:ml-4 xl:border-l xl:pl-5">
           <LanguageToggle />
           <ThemeToggle />
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger render={<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" />}>
+            <SheetTrigger render={<Button variant="ghost" size="icon" className="xl:hidden" aria-label="Open menu" />}>
               <Menu />
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
               <SheetHeader>
                 <SheetTitle>
-                  <Logo />
+                  <Logo size="sm" />
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-1 px-4" aria-label="Mobile">
@@ -66,7 +69,7 @@ export function SiteHeader() {
                     onClick={() => setOpen(false)}
                     className={cn(
                       "rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted",
-                      pathname.startsWith(n.href) && "bg-accent text-accent-foreground",
+                      active(n.href) && "bg-accent text-accent-foreground",
                     )}
                   >
                     {t(n.key)}

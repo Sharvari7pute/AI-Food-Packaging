@@ -56,17 +56,17 @@ export function ResultsView({ result, readOnly = false }: { result: RecommendRes
   return (
     <div className="space-y-6">
       {/* Summary strip */}
-      <section className="overflow-hidden rounded-2xl border bg-gradient-to-br from-brand to-primary text-white shadow-md">
+      <section className="overflow-hidden rounded-2xl border bg-forest text-forest-foreground shadow-md">
         <div className="grid gap-4 p-5 sm:p-6 md:grid-cols-[1.3fr_1fr]">
           <div>
-            <p className="text-sm text-white/75">{readOnly ? t("results.verified") : t("results.summary")}</p>
+            <p className="text-sm opacity-75">{readOnly ? t("results.verified") : t("results.summary")}</p>
             <h1 className="mt-1 flex flex-wrap items-center gap-2 text-2xl font-bold sm:text-3xl">
-              {shown.commodity} {shown.commodityHi && <span className="font-normal text-white/80">{shown.commodityHi}</span>}
+              {shown.commodity} {shown.commodityHi && <span className="font-serif font-normal italic opacity-80">{shown.commodityHi}</span>}
               {shown.aiEstimatedFood && (
                 <span className="rounded-md bg-warning px-2 py-0.5 text-xs font-semibold text-black">AI-estimated food — verify</span>
               )}
             </h1>
-            <p className="mt-2 text-sm text-white/85">
+            <p className="mt-2 text-sm opacity-85">
               {num(i.packWeightG)} g pack · {i.shelfLifeDays} days wanted · {titleCase(i.storageType)} {num(i.storageTempC)} °C ·{" "}
               {num(i.relativeHumidityPct)}% RH · {i.transport === "LONG_DISTANCE" ? "long distance" : "local"} · area {num(i.packAreaM2)} m²
               {i.areaEstimated ? " (est.)" : ""}
@@ -114,7 +114,7 @@ export function ResultsView({ result, readOnly = false }: { result: RecommendRes
             ))}
           </ul>
         </Section>
-        <Section title={t("results.explanation")} icon={<Sparkles className="size-5 text-violet-500" />}>
+        <Section title={t("results.explanation")} icon={<Sparkles className="size-5 text-brand" />}>
           <ExplanationBox id={result.id} shareId={result.shareId} initialLang={result.inputs.language} />
         </Section>
       </div>
@@ -201,10 +201,10 @@ export function ResultsView({ result, readOnly = false }: { result: RecommendRes
 
 function Stat({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="rounded-xl bg-white/12 p-3 backdrop-blur">
-      <p className="text-[11px] text-white/70">{label}</p>
+    <div className="rounded-xl bg-white/10 p-3 ring-1 ring-white/10">
+      <p className="text-[11px] opacity-70">{label}</p>
       <p className="truncate text-lg font-bold">{value}</p>
-      <p className="truncate text-[10px] text-white/70">{unit}</p>
+      <p className="truncate text-[10px] opacity-70">{unit}</p>
     </div>
   )
 }
