@@ -1,0 +1,23 @@
+# Secrets - never commit
+.env
+.env.*
+!.env.example
+*.pem
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Backend
+backend/target/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/test-results/
+frontend/playwright-report/
+frontend/next-env.d.ts
+frontend/*.tsbuildinfo

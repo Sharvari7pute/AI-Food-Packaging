@@ -1,0 +1,8 @@
+name,layers,typical_use
+PET/AL/PE,PET:12;Aluminium foil:9;LDPE:50,"High-barrier snacks, coffee, masala"
+BOPP/Metalized PET/PE,BOPP:20;Metalized PET:12;LDPE:30,"Chips, namkeen"
+PET/PE,PET:12;LDPE:50,"Medium-barrier dry foods"
+Nylon/PE,Nylon (PA):25;LDPE:60,"Vacuum packs, paneer, meat"
+PE/EVOH/PE,LDPE:40;EVOH:5;LDPE:40,"Recyclable-ready high oxygen barrier"
+BOPP/CPP,BOPP:20;CPP:30,"Mono-PP recyclable pack"
+Kraft/PE,Paper (coated):70;LDPE:25,"Paper-based atta, sugar, dal"

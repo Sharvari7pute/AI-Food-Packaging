@@ -1,0 +1,15 @@
+name,name_hi,category,moisture_pct,water_activity,critical_aw,fat_pct,o2_sensitive,light_sensitive,respiring,respiration_rate,default_shelf_life_days,source_url,notes
+Chips,चिप्स,dry_snack,2,0.2,0.4,35,high,high,no,,90,dummy,approx
+Namkeen,नमकीन,dry_snack,3,0.3,0.45,30,high,high,no,,120,dummy,approx
+Biscuit,बिस्किट,bakery,4,0.3,0.5,20,medium,medium,no,,180,dummy,approx
+Atta,आटा,staple,12,0.6,0.7,1.5,low,low,no,,90,dummy,approx
+Masala powder,मसाला पाउडर,staple,9,0.5,0.6,5,medium,high,no,,365,dummy,approx
+Coffee powder,कॉफी पाउडर,other,3,0.3,0.45,12,high,high,no,,365,dummy,approx
+Paneer,पनीर,dairy,53,0.97,,22,medium,medium,no,,7,dummy,approx
+Milk,दूध,dairy,87,0.99,,3.5,medium,high,no,,2,dummy,approx
+Bread,ब्रेड,bakery,38,0.95,,4,low,low,no,,5,dummy,approx
+Frozen matar,फ्रोज़न मटर,frozen,79,0.98,,0.4,low,low,no,,270,dummy,approx
+Tamatar,टमाटर,fruit,94,0.98,,0.2,low,low,yes,15,7,dummy,approx
+Seb,सेब,fruit,86,0.98,,0.2,low,low,yes,7,30,dummy,approx
+Kela,केला,fruit,75,0.98,,0.3,low,low,yes,30,5,dummy,approx
+Palak,पालक,vegetable,91,0.99,,0.4,low,low,yes,50,3,dummy,approx

@@ -1,0 +1,10 @@
+name,state,summer_temp_c,summer_rh_pct,monsoon_temp_c,monsoon_rh_pct,winter_temp_c,winter_rh_pct
+Nagpur,Maharashtra,38,40,30,80,22,50
+Mumbai,Maharashtra,32,75,29,88,27,65
+Pune,Maharashtra,34,45,26,82,22,50
+Delhi,Delhi,36,45,31,75,16,65
+Chennai,Tamil Nadu,34,70,31,78,26,72
+Kolkata,West Bengal,33,78,30,86,21,65
+Guwahati,Assam,30,82,29,88,19,75
+Jaipur,Rajasthan,38,35,31,70,18,50
+Shimla,Himachal Pradesh,22,65,19,85,8,60

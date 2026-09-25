@@ -1,0 +1,17 @@
+name,type,otr_25um,wvtr_25um,cost_per_kg_inr,density_g_cm3,min_temp_c,max_temp_c,recyclable,biodegradable,transparent,heat_sealable,strength_1to5,source_url,notes
+LDPE,plastic,7874,19.8,120,0.92,-50,80,yes,no,yes,yes,3,https://www.polyprint.com/understanding-film-properties/flexographic-otr/,"OTR/WVTR sourced (Poly Print midpoint, 25um). Cost/density/temp/strength approx"
+LLDPE,plastic,7500,18,125,0.92,-50,90,yes,no,yes,yes,4,https://www.exxonmobilchemical.com/en/resources/product-data-sheets/polyethylene/exxonmobil-ntx-lldpe,ALL approx (LDPE-like). Find LLDPE datasheet
+HDPE,plastic,2743,6.35,130,0.95,-40,110,yes,no,no,yes,3,https://www.polyprint.com/understanding-film-properties/flexographic-otr/,OTR/WVTR sourced. Translucent so transparent=no. Rest approx
+CPP,plastic,2743,10.3,150,0.92,-10,130,yes,no,yes,yes,3,https://www.polyprint.com/understanding-film-properties/flexographic-otr/,OTR/WVTR sourced (cast PP). Weak in cold. Rest approx
+BOPP,plastic,2057,5.13,150,0.91,-20,120,yes,no,yes,no,4,https://www.polyprint.com/understanding-film-properties/flexographic-otr/,OTR/WVTR sourced. Plain BOPP not sealable (coated grades are). Rest approx
+Metalized BOPP,plastic,50,0.3,180,0.91,-20,120,no,no,no,no,2,https://www.jindalfilms.com/wp-content/uploads/2025/05/Jindal-Films-OPP-Films-with-Improved-Seal-Performance.pdf,VERIFY: approx standard grade. Amisha source (Jindal) gave 0.1/0.1 for a specific high-barrier grade; find exact datasheet + unit
+PET,plastic,63,18.3,150,1.39,-60,150,yes,no,yes,no,5,https://www.polyprint.com/understanding-film-properties/flexographic-otr/,OTR/WVTR sourced. Rest approx
+Metalized PET,plastic,1,1,200,1.4,-60,150,no,no,no,no,5,https://expansteel.com/products/es-c,"VERIFY: 0.6/0.6 from UFlex (specific grade); OTR=WVTR identical is suspicious, recheck datasheet. Rest approx"
+Aluminium foil,metal,0.005,0.01,450,2.7,-70,300,yes,no,no,no,2,https://www.pharmapeak.net/aluminium-plain-foil-25-micron/,approx: foil >=9um is effectively zero barrier (except pinholes). Needs laminating; never used alone
+Nylon (PA),plastic,29.3,150,350,1.14,-60,150,no,no,yes,no,5,https://www.polyprint.com/understanding-film-properties/flexographic-otr/,OTR sourced (biax nylon-6). WVTR approx (nylon absorbs moisture). Rest approx
+EVOH,plastic,0.14,74.2,700,1.19,-40,100,no,no,yes,no,2,https://www.polyprint.com/understanding-film-properties/flexographic-otr/,OTR/WVTR sourced (dry EVOH; OTR rises a lot when humid). Always inner layer. Rest approx
+PVDC coated film,coating,7,7,300,1.4,-20,100,no,no,yes,yes,4,https://www.srf.com/business-solutions/performance-films-and-foil/bopet/protection-plus,VERIFY: 8/8 from UFlex PVDC-coated BOPET grade; OTR=WVTR identical is suspicious. Rest approx
+PLA,bio,675,380,300,1.08,-20,55,no,yes,yes,yes,2,https://www.plas.com/technical-data/detail/8AC35C8F6C322590546B3126455C5FD0,ALL approx. Biodegradable only in industrial compost. Softens at 55-60C
+Paper (coated),paper,25.6,57,120,0.8,-20,100,yes,no,no,yes,2,http://pmc.ncbi.nlm.nih.gov/articles/PMC9439277/,"ALL approx, assumes PE-coated paper (heat sealable via PE). Barrier depends on coating"
+Glass,rigid,0,0,40,2.5,-40,250,yes,no,yes,no,3,http://pmc.ncbi.nlm.nih.gov/articles/PMC9439277/,Reference only (rigid jar). Effectively zero permeability. Split from Glass/Tin
+Tinplate,rigid,0,0,150,7.3,-40,250,yes,no,no,no,5,https://pmc.ncbi.nlm.nih.gov/articles/PMC13027902/,Reference only (can). Effectively zero permeability. Split from Glass/Tin

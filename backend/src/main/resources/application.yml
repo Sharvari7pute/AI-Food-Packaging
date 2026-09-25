@@ -1,0 +1,100 @@
+# PackSmart backend configuration.
+# Secrets come from environment variables (Render) or backend/.env (local, gitignored).
+spring:
+  application:
+    name: packsmart
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 20000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  compression:
+    enabled: true
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  reseed-on-start: ${RESEED_ON_START:false}
+  disclaimer: "Prototype estimates based on literature values. Validate with lab shelf-life testing."
+
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  model: ${GEMINI_MODEL:gemini-2.5-flash}
+  timeout-seconds: 8
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    com.packsmart.service.ai: ${AI_LOG_LEVEL:INFO}
+
+# ---------------------------------------------------------------------------
+# Engine constants (Section 4). All tunable numbers live here - never in code.
+# ---------------------------------------------------------------------------
+engine:
+  reference-otr-temp-c: 23
+  reference-wvtr-temp-c: 38
+  reference-respiration-temp-c: 20
+  q10: 2.0
+  o2-partial-pressure-atm: 0.21
+  reference-thickness-um: 25
+  o2-tolerance-ml-per-kg: { high: 1.0, medium: 10.0, low: 50.0 }
+  allowed-moisture-gain-fraction: 0.02
+  keep-out-aw-threshold: 0.7
+  keep-in-aw-threshold: 0.9
+  thickness-options-um: [12, 15, 20, 25, 30, 40, 50, 60, 75, 100]
+  min-thickness-um: 20
+  max-thickness-um: 100
+  max-shelf-life-days: 730
+  overkill-margin: 20
+  score-weights:
+    default:  { barrier: 0.40, cost: 0.25, eco: 0.20, strength: 0.15 }
+    eco:      { barrier: 0.30, cost: 0.15, eco: 0.40, strength: 0.15 }
+    budget:   { barrier: 0.30, cost: 0.45, eco: 0.10, strength: 0.15 }
+  # --- additional constants used by the engine (see docs/DECISIONS.md) ---
+  fat-threshold-pct: 10
+  driving-factor-divisor: 90
+  min-driving-factor: 0.05
+  frozen-min-temp-c: -25
+  min-strength-long-distance: 3
+  strength-scale: 5
+  area-base-m2: 0.02
+  area-per-gram-m2: 0.0004
+  avoid-material: LDPE
+  avoid-thickness-um: 50
+  perforated-fallback-material: LDPE
+  perforated-fallback-thickness-um: 25
+  curve-extension: 1.5
+  curve-max-points: 60
+  default-map-target-o2-pct: 5
+  top-options: 3
+  near-miss-count: 3
+  barrier-score:
+    within-margin: 1.0
+    overkill: 0.8
+  eco-score:
+    biodegradable: 1.0
+    recyclable-mono: 0.8
+    contains-aluminium: 0.1
+    other: 0.3
+    aluminium-family: AL

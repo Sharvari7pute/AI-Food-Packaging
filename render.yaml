@@ -1,0 +1,38 @@
+# Render Blueprint - both apps deploy from this one repo.
+# Render dashboard -> New -> Blueprint -> pick this repo, then fill the env vars marked sync: false.
+services:
+  - type: web
+    name: packsmart-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        sync: false
+      - key: RESEED_ON_START
+        sync: false
+
+  - type: web
+    name: packsmart-frontend
+    runtime: node
+    rootDir: frontend
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: NODE_VERSION
+        value: "20.19.4"

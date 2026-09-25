@@ -1,0 +1,16 @@
+# Tests use an in-memory H2 database in PostgreSQL mode - never the shared Supabase DB.
+spring:
+  datasource:
+    url: jdbc:h2:mem:packsmart;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+app:
+  reseed-on-start: false
+
+gemini:
+  api-key: ""
