@@ -61,6 +61,10 @@ npm install
 npm run dev                  # http://localhost:3000
 ```
 
+### One public URL (optional)
+
+To serve the API through the frontend's own address (handy for a single tunnel or proxy, and no CORS needed), build and start the frontend with `NEXT_PUBLIC_API_URL=/` and `API_PROXY_TARGET=http://localhost:8080`. Next.js then forwards `/api/*` to the backend.
+
 ### Tests
 
 ```bash

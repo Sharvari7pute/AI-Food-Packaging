@@ -17,6 +17,7 @@ import type {
   RecommendResponse,
 } from "./types"
 
+// "/" means same origin (API proxied by the frontend, see next.config.ts).
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080").replace(/\/$/, "")
 
 export class ApiError extends Error {
