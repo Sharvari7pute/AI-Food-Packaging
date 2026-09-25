@@ -102,6 +102,16 @@ Secrets never go into git: only the `.env.example` files are committed.
 
 Bad rows are logged and skipped, never crashing the app. Startup also warns about names that don't match between files.
 
+## Live deployment (Render, Singapore region)
+
+| | URL |
+|---|---|
+| App (frontend, API proxied under `/api`) | https://annkavach-frontend.onrender.com |
+| Backend API | https://annkavach-backend.onrender.com/api/health |
+| Swagger | https://annkavach-backend.onrender.com/swagger-ui.html |
+
+The frontend service is built with `NEXT_PUBLIC_API_URL=/` and `API_PROXY_TARGET=https://annkavach-backend.onrender.com`, so the browser only talks to one origin. Render has no GitHub webhook access to this repo, so **pushes do not auto-deploy**: trigger a deploy from the Render dashboard (Manual Deploy → Deploy latest commit) or via the API (`POST /v1/services/<id>/deploys`). Free instances sleep after ~15 min idle; the first request then takes ~50 s.
+
 ## Deploy on Render
 
 `render.yaml` deploys both services from this one repo.
