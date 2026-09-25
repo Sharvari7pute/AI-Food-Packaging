@@ -35,3 +35,4 @@ Every choice made where the brief was silent or ambiguous. The rule used: pick t
 20. **OpenPDF 1.4.2** (classic `com.lowagie` API) was chosen for stability.
 21. **.env loading.** `spring.config.import=optional:file:.env[.properties]` is used, so no extra dependency is needed. Run the backend from the `backend/` folder so it finds `.env`.
 22. **Supabase details** were not provided while building, so the app was verified with the H2 test database. Put the real values in `backend/.env` (see `backend/.env.example`).
+23. **Devanagari in the PDF.** OpenPDF can't shape Devanagari (vowel signs and conjuncts), and its AWT layout processor breaks positioning when mixed with other fonts. So the PDF shows food names in English only. A Hindi/Marathi AI explanation is still embedded with Noto Sans Devanagari but without shaping, so some vowel signs may look out of place. The web verify page renders Hindi/Marathi correctly.
