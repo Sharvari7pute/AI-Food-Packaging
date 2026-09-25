@@ -21,6 +21,10 @@ services:
         sync: false
       - key: GEMINI_MODEL
         sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        sync: false
       - key: RESEED_ON_START
         sync: false
 

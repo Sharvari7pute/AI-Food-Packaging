@@ -11,7 +11,7 @@ Small food businesses, farmers and startups often pick packaging by guesswork. W
 - a plain-language explanation in English / हिंदी / मराठी
 - a downloadable, **QR-verified packaging spec sheet (PDF)** to send to a supplier
 
-> **Golden rule:** every packaging decision and every number comes from our deterministic engine (rules + physics). Gemini only fills forms from text, explains results, answers chat from our database and estimates unknown foods (labelled "AI-estimated — verify"). The whole app works **without** a Gemini key.
+> **Golden rule:** every packaging decision and every number comes from our deterministic engine (rules + physics). Gemini only fills forms from text, explains results, answers chat from our database and estimates unknown foods (labelled "AI-estimated — verify"). If Gemini is down or out of quota, Groq is used as a backup with the same prompts and rules. The whole app works **without** any AI key.
 
 Screenshots: _add screenshots of Home, Results and the PDF here._
 
@@ -80,6 +80,8 @@ cd frontend && npm run lint && npm run build && npm run test:e2e   # Playwright 
 | backend | `FRONTEND_URL` | CORS origin + link inside QR codes (e.g. `https://packsmart-frontend.onrender.com`) |
 | backend | `GEMINI_API_KEY` | optional; without it every AI feature falls back |
 | backend | `GEMINI_MODEL` | default `gemini-3.8-flash` (`gemini-2.5-flash` is retired for new keys) |
+| backend | `GROQ_API_KEY` | optional backup AI; used only when every Gemini model fails or hits its quota |
+| backend | `GROQ_MODEL` | default `llama-3.3-70b-versatile` (see console.groq.com/docs/models) |
 | backend | `GEMINI_THINKING_LEVEL` | default `low` (keeps Gemini 3 answers under the 8 s timeout) |
 | backend | `RESEED_ON_START` | `true` once to reload the data tables from the CSVs |
 | backend | `PORT` | set automatically by Render (default 8080) |
@@ -106,7 +108,7 @@ Bad rows are logged and skipped, never crashing the app. Startup also warns abou
 
 1. Push to GitHub. In Render, go to **New → Blueprint** and pick this repo. Render reads `render.yaml` and creates `packsmart-backend` (Docker) and `packsmart-frontend` (Node).
 2. Fill in the env vars Render asks for:
-   - backend: `DB_URL`, `DB_USER`, `DB_PASSWORD`, `GEMINI_API_KEY` (optional), `GEMINI_MODEL` = `gemini-3.8-flash`, `RESEED_ON_START` = `false`, `FRONTEND_URL` (any placeholder for now)
+   - backend: `DB_URL`, `DB_USER`, `DB_PASSWORD`, `GEMINI_API_KEY` (optional), `GEMINI_MODEL` = `gemini-3.8-flash`, `GROQ_API_KEY` (optional backup), `GROQ_MODEL` = `llama-3.3-70b-versatile`, `RESEED_ON_START` = `false`, `FRONTEND_URL` (any placeholder for now)
    - frontend: `NEXT_PUBLIC_API_URL` (placeholder for now)
 3. Deploy. Then set backend `FRONTEND_URL` = the frontend URL and frontend `NEXT_PUBLIC_API_URL` = the backend URL, and **redeploy both**. `NEXT_PUBLIC_*` is baked in at build time, so the frontend needs a rebuild.
 4. Check `https://<backend>/api/health`.

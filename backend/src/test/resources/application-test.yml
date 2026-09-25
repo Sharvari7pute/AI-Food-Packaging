@@ -14,3 +14,6 @@ app:
 
 gemini:
   api-key: ""
+
+groq:
+  api-key: ""

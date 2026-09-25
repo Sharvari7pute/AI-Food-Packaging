@@ -32,10 +32,12 @@ public class GeminiClient {
     private static final float TEMPERATURE = 0.2f;
 
     private final GeminiProperties props;
+    private final GroqClient groq;
     private volatile Client client;
 
+    /** True when any AI provider is configured (Gemini primary, Groq backup). */
     public boolean isEnabled() {
-        return props.isEnabled();
+        return props.isEnabled() || groq.isEnabled();
     }
 
     /** One-shot text generation. */
@@ -61,17 +63,31 @@ public class GeminiClient {
         return Content.builder().role("model").parts(Part.fromText(text)).build();
     }
 
+    /** Gemini model chain first; if none answers, Groq; if that fails too, empty (callers use templates). */
     private Optional<String> generate(String systemPrompt, List<Content> contents, Map<String, Object> jsonSchema) {
-        if (!isEnabled()) {
-            return Optional.empty();
+        Optional<String> answer = props.isEnabled() ? generateGemini(systemPrompt, contents, jsonSchema) : Optional.empty();
+        if (answer.isPresent() || !groq.isEnabled()) {
+            return answer;
         }
+        log.info("Gemini unavailable - trying Groq backup");
+        return groq.chat(systemPrompt, toMessages(contents), jsonSchema != null);
+    }
+
+    private static List<GroqClient.Message> toMessages(List<Content> contents) {
+        return contents.stream()
+                .map(c -> new GroqClient.Message(c.role().orElse("user").equals("model") ? "assistant" : "user",
+                        String.join("\n", c.parts().orElse(List.of()).stream().map(p -> p.text().orElse("")).toList())))
+                .toList();
+    }
+
+    private Optional<String> generateGemini(String systemPrompt, List<Content> contents, Map<String, Object> jsonSchema) {
         log.debug("Gemini prompt [system]: {}", systemPrompt);
         log.debug("Gemini prompt [contents]: {}", contents);
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(props.getTimeoutSeconds());
         for (String model : props.modelChain()) {
             long left = deadline - System.nanoTime();
             if (left <= 0) {
-                log.warn("Gemini time budget used up, using fallback");
+                log.warn("Gemini time budget used up");
                 return Optional.empty();
             }
             GenerateContentConfig config = config(model, systemPrompt, jsonSchema, left);
@@ -86,14 +102,14 @@ public class GeminiClient {
                 Thread.currentThread().interrupt();
                 return Optional.empty();
             } catch (TimeoutException e) {
-                log.warn("Gemini {} timed out, using fallback", model);
+                log.warn("Gemini {} timed out", model);
                 return Optional.empty();
             } catch (Exception e) {
                 // Quota (429), retired model (404), overload (503) or unsupported option (400): try the next model.
                 log.warn("Gemini {} failed: {}", model, firstLine(e));
             }
         }
-        log.warn("All Gemini models failed, using fallback");
+        log.warn("All Gemini models failed");
         return Optional.empty();
     }
 

@@ -105,7 +105,10 @@ export function MethodologyPage() {
             <li>• Pack-Bot answers only from our database</li>
             <li>• Estimates unknown foods — labelled &quot;AI-estimated — verify&quot;</li>
           </ul>
-          <p className="mt-2 text-xs">Gemini never picks materials and never invents numbers. Without an AI key everything still works using fallbacks.</p>
+          <p className="mt-2 text-xs">
+            Gemini never picks materials and never invents numbers. If Gemini is unavailable, Groq (same prompts, same rules) is
+            the backup; without any AI key everything still works using fallbacks.
+          </p>
         </div>
       </section>
 
