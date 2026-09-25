@@ -31,34 +31,71 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit & { signal?: AbortSignal }): Promise<T> {
-  let res: Response
-  try {
-    res = await fetch(`${API_URL}${path}`, {
-      ...init,
-      headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
-      cache: "no-store",
+/** Free hosting sleeps when idle: the first requests fail with 502/503/504 (or a network error) while it wakes up. */
+const WAKE_STATUSES = new Set([502, 503, 504])
+const WAKE_TIMEOUT_MS = 150_000
+const RETRY_EVERY_MS = 4_000
+export const WAKING_EVENT = "packsmart:waking"
+
+function announceWaking(waking: boolean) {
+  if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(WAKING_EVENT, { detail: waking }))
+}
+
+const sleep = (ms: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    const id = setTimeout(resolve, ms)
+    signal?.addEventListener("abort", () => {
+      clearTimeout(id)
+      reject(new DOMException("Aborted", "AbortError"))
     })
-  } catch (e) {
-    if ((e as Error).name === "AbortError") throw e
-    throw new ApiError(
-      "Cannot reach the PackSmart server. It may be waking up (free hosting sleeps) - try again in a minute.",
-      0,
-    )
-  }
-  if (!res.ok) {
-    let message = `Request failed (${res.status})`
-    let details: string[] = []
-    try {
-      const body = await res.json()
-      message = body.error || message
-      details = body.details || []
-    } catch {
-      /* not JSON */
+  })
+
+async function request<T>(path: string, init?: RequestInit & { signal?: AbortSignal }): Promise<T> {
+  const started = Date.now()
+  let waking = false
+  try {
+    for (;;) {
+      let res: Response | null = null
+      try {
+        res = await fetch(`${API_URL}${path}`, {
+          ...init,
+          headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
+          cache: "no-store",
+        })
+      } catch (e) {
+        if ((e as Error).name === "AbortError") throw e
+        res = null
+      }
+      const retryable = res === null || WAKE_STATUSES.has(res.status)
+      if (retryable && Date.now() - started < WAKE_TIMEOUT_MS) {
+        if (!waking) {
+          waking = true
+          announceWaking(true)
+        }
+        await sleep(RETRY_EVERY_MS, init?.signal)
+        continue
+      }
+      if (res === null) {
+        throw new ApiError("Cannot reach the PackSmart server. Please check your internet connection and try again.", 0)
+      }
+      if (!res.ok) {
+        let message = `Request failed (${res.status})`
+        let details: string[] = []
+        try {
+          const body = await res.json()
+          message = body.error || message
+          details = body.details || []
+        } catch {
+          /* not JSON */
+        }
+        if (WAKE_STATUSES.has(res.status)) message = "The server is taking too long to wake up. Please try again in a minute."
+        throw new ApiError(message, res.status, details)
+      }
+      return (await res.json()) as T
     }
-    throw new ApiError(message, res.status, details)
+  } finally {
+    if (waking) announceWaking(false)
   }
-  return res.json() as Promise<T>
 }
 
 const post = <T>(path: string, body: unknown, signal?: AbortSignal) =>

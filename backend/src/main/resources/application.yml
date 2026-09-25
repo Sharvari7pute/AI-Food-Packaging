@@ -47,6 +47,13 @@ groq:
   base-url: ${GROQ_BASE_URL:https://api.groq.com/openai/v1}
   timeout-seconds: 8
 
+# Optional keep-alive for free hosting (see KeepAliveService). Off unless KEEPALIVE_ENABLED=true.
+keepalive:
+  enabled: ${KEEPALIVE_ENABLED:false}
+  url: ${KEEPALIVE_URL:}
+  start-hour-ist: ${KEEPALIVE_START_HOUR_IST:8}
+  end-hour-ist: ${KEEPALIVE_END_HOUR_IST:22}
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

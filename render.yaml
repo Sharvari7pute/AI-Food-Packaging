@@ -27,6 +27,8 @@ services:
         sync: false
       - key: RESEED_ON_START
         sync: false
+      - key: KEEPALIVE_ENABLED
+        value: "false"
 
   - type: web
     name: packsmart-frontend

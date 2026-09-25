@@ -44,3 +44,24 @@ test("home → recommend Chips via wizard → results show an option card", asyn
   await expect(page.getByTestId("option-card").first()).toContainText("PET/AL/PE")
   await expect(page.getByTestId("decision-trace")).toContainText("oxygen barrier HIGH")
 })
+
+test("sleeping server: 502s are retried with a waking banner, then the page loads", async ({ page }) => {
+  test.skip(REAL, "only with the mocked API")
+  let failures = 2
+  await page.route("**/api/**", async (route) => {
+    const p = new URL(route.request().url()).pathname
+    if (p === "/api/commodities" && failures > 0) {
+      failures--
+      return route.fulfill({ status: 502, body: "Bad Gateway" })
+    }
+    const json = (body: unknown) => ({ status: 200, contentType: "application/json", body: JSON.stringify(body) })
+    if (p === "/api/commodities") return route.fulfill(json(commodities))
+    if (p === "/api/cities") return route.fulfill(json(cities))
+    return route.fulfill(json({ status: "ok", aiEnabled: false }))
+  })
+  await page.goto("/recommend")
+  await expect(page.getByRole("status")).toContainText("Waking up")
+  await page.getByTestId("food-combobox").click({ timeout: 20_000 })
+  await expect(page.getByTestId("food-option-Chips")).toBeVisible()
+  await expect(page.getByRole("status")).toHaveCount(0)
+})

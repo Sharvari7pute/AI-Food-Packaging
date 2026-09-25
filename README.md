@@ -110,7 +110,7 @@ Bad rows are logged and skipped, never crashing the app. Startup also warns abou
 | Backend API | https://annkavach-backend.onrender.com/api/health |
 | Swagger | https://annkavach-backend.onrender.com/swagger-ui.html |
 
-The frontend service is built with `NEXT_PUBLIC_API_URL=/` and `API_PROXY_TARGET=https://annkavach-backend.onrender.com`, so the browser only talks to one origin. Render has no GitHub webhook access to this repo, so **pushes do not auto-deploy**: trigger a deploy from the Render dashboard (Manual Deploy → Deploy latest commit) or via the API (`POST /v1/services/<id>/deploys`). Free instances sleep after ~15 min idle; the first request then takes ~50 s.
+The frontend service is built with `NEXT_PUBLIC_API_URL=/` and `API_PROXY_TARGET=https://annkavach-backend.onrender.com`, so the browser only talks to one origin. Render has no GitHub webhook access to this repo, so **pushes do not auto-deploy**: trigger a deploy from the Render dashboard (Manual Deploy → Deploy latest commit) or via the API (`POST /v1/services/<id>/deploys`). Free instances sleep after ~15 min idle; the first request then takes ~1 minute. The app handles this: it pings the server as soon as a page opens, shows a "Waking up the server…" banner, and retries automatically (502/503/504) for up to 2.5 minutes. For demo days set `KEEPALIVE_ENABLED=true` on the backend: it then pings the frontend's `/api/health` every 10 min between `KEEPALIVE_START_HOUR_IST` and `KEEPALIVE_END_HOUR_IST` (default 8–22), which keeps both services awake. Leave it off otherwise, because always-on services use up Render's 750 free hours/month per workspace.
 
 ## Deploy on Render
 

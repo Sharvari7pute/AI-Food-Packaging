@@ -5,6 +5,7 @@ import "./globals.css"
 import { Providers } from "@/components/layout/providers"
 import { SiteHeader } from "@/components/layout/site-header"
 import { TopBar } from "@/components/layout/top-bar"
+import { WakeBanner } from "@/components/layout/wake-banner"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { PackBotFab } from "@/components/chat/packbot-fab"
 
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Providers>
           <TopBar />
           <SiteHeader />
+          <WakeBanner />
           <main className="flex-1">{children}</main>
           <SiteFooter />
           <PackBotFab />
