@@ -28,6 +28,9 @@ import com.packsmart.service.engine.BarrierCalculator;
 import com.packsmart.service.engine.LaminateService;
 import com.packsmart.service.engine.Num;
 import com.packsmart.service.engine.PackEconomics;
+import com.packsmart.service.engine.ScoringService;
+import com.packsmart.service.engine.model.Layer;
+import com.packsmart.service.engine.model.MaterialData;
 import com.packsmart.service.engine.model.Catalog;
 import com.packsmart.service.engine.model.Economics;
 import com.packsmart.service.engine.model.LaminateDef;
@@ -47,6 +50,8 @@ public class CatalogService {
 
     /** Laminate library cost/CO2e is shown for a reference 100 g pack. */
     private static final double REFERENCE_PACK_G = 100;
+    /** Single films in the library are compared at the 25 µm reference thickness of the data. */
+    private static final double REFERENCE_THICKNESS_UM = 25;
 
     private final MaterialRepository materials;
     private final MaterialExtraRepository extras;
@@ -57,6 +62,7 @@ public class CatalogService {
     private final LaminateService laminateService;
     private final PackEconomics economics;
     private final BarrierCalculator barrier;
+    private final ScoringService scoring;
 
     private volatile Snapshot snapshot;
 
@@ -72,12 +78,12 @@ public class CatalogService {
 
         Map<String, MaterialExtra> extraByName = new HashMap<>();
         ext.forEach(e -> extraByName.put(CatalogMapper.key(e.getName()), e));
+        double refArea = barrier.estimateArea(REFERENCE_PACK_G);
         List<MaterialDto> matDtos = mats.stream()
                 .sorted(Comparator.comparing(Material::getId))
-                .map(m -> toDto(m, extraByName.get(CatalogMapper.key(m.getName()))))
+                .map(m -> toDto(m, extraByName.get(CatalogMapper.key(m.getName())), catalog, refArea))
                 .toList();
 
-        double refArea = barrier.estimateArea(REFERENCE_PACK_G);
         Map<String, Long> lamIds = new HashMap<>();
         laminates.findAll().forEach(l -> lamIds.put(l.getName(), l.getId()));
         List<LaminateDto> lamDtos = catalog.laminates().stream()
@@ -161,12 +167,18 @@ public class CatalogService {
                 .forEach(c -> log.warn("Respiring commodity '{}' has no map_targets.csv row", c.getName()));
     }
 
-    private MaterialDto toDto(Material m, MaterialExtra x) {
+    private MaterialDto toDto(Material m, MaterialExtra x, Catalog catalog, double refArea) {
+        Optional<MaterialData> data = catalog.material(m.getName());
+        List<Layer> ref = data.map(d -> List.of(new Layer(d, REFERENCE_THICKNESS_UM))).orElse(List.of());
+        Double eco = data.map(d -> Num.dp(scoring.ecoScore(laminateService.evaluate(ref)), 2)).orElse(null);
+        Economics econ = data.map(d -> economics.compute(ref, refArea)).orElse(null);
         return new MaterialDto(m.getId(), m.getName(), m.getType(), m.getOtr25um(), m.getWvtr25um(), m.getCostPerKgInr(),
                 m.getDensityGCm3(), m.getMinTempC(), m.getMaxTempC(), m.getRecyclable(), m.getBiodegradable(),
                 m.getTransparent(), m.getHeatSealable(), m.getStrength1to5(), m.getSourceUrl(), m.getNotes(),
                 x != null ? x.getFamily() : null, x != null ? x.getCo2eKgPerKg() : null,
-                CatalogMapper.isApprox(m.getNotes()), "rigid".equalsIgnoreCase(m.getType()));
+                CatalogMapper.isApprox(m.getNotes()), "rigid".equalsIgnoreCase(m.getType()), eco,
+                econ != null ? Num.dp(econ.costPer1000Inr(), 2) : null,
+                econ != null ? Num.dp(econ.co2eKgPer1000(), 3) : null);
     }
 
     private LaminateDto toDto(Long id, LaminateDef l, double refArea) {
@@ -176,6 +188,7 @@ public class CatalogService {
                 l.layers().stream().map(x -> new LayerView(x.material().name(), x.thicknessUm())).toList(),
                 e.totalThicknessUm(), Num.sig(e.otr()), Num.sig(e.wvtr()), e.minTempC(), e.maxTempC(), e.transparent(),
                 e.heatSealable(), e.strength(), e.recyclable(), e.biodegradable(), e.family(), e.approx(),
-                Num.sig(refArea), Num.dp(econ.costPer1000Inr(), 2), Num.dp(econ.co2eKgPer1000(), 3));
+                Num.sig(refArea), Num.dp(econ.costPer1000Inr(), 2), Num.dp(econ.co2eKgPer1000(), 3),
+                Num.dp(scoring.ecoScore(e), 2));
     }
 }

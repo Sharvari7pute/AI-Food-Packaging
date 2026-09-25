@@ -50,7 +50,10 @@ public final class CatalogDtos {
             String family,
             Double co2eKgPerKg,
             boolean approx,
-            boolean rigid) {
+            boolean rigid,
+            Double ecoScore,
+            Double referenceCostPer1000Inr,
+            Double referenceCo2eKgPer1000) {
     }
 
     public record LayerView(String material, double thicknessUm) {
@@ -75,7 +78,8 @@ public final class CatalogDtos {
             boolean approx,
             double referenceAreaM2,
             double costPer1000Inr,
-            double co2eKgPer1000) {
+            double co2eKgPer1000,
+            double ecoScore) {
     }
 
     public record CityDto(

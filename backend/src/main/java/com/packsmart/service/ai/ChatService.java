@@ -120,6 +120,11 @@ public class ChatService {
                         + ". Run the recommender for the exact pack.";
             }
         }
+        if (q.contains("otr") && q.contains("wvtr")) {
+            return prefix + "OTR (oxygen transmission rate) is how much oxygen passes through a film per m² per day - low OTR "
+                    + "stops oily foods going rancid. WVTR (water vapour transmission rate) is how much moisture passes - low WVTR "
+                    + "keeps dry foods crisp and moist foods from drying out. A good pack must meet both limits for your food.";
+        }
         if (q.contains("wvtr") || q.contains("moisture") || q.contains("nami")) {
             return prefix + "WVTR (water vapour transmission rate) says how much moisture passes through a film per m² per day. "
                     + "Lower WVTR keeps dry foods like chips crisp.";

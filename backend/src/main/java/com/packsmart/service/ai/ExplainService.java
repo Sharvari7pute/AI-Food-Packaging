@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ExplainService {
 
-    private static final int MAX_REASONS = 6;
+    private static final int MAX_REASONS = 4;
 
     private final GeminiClient gemini;
     private final RecommendationService recommendations;
@@ -86,7 +86,10 @@ public class ExplainService {
 
     /** Non-AI explanation built only from the engine's reasons and numbers. */
     static String template(RecommendResponse r, String lang) {
-        List<String> reasons = r.requirements().reasons().stream().limit(MAX_REASONS).toList();
+        // Keep the plain-language rules; the formula lines are already shown in the decision trace.
+        List<String> reasons = r.requirements().reasons().stream()
+                .filter(x -> !x.contains("required OTR") && !x.contains("required WVTR") && !x.contains("film OTR must"))
+                .limit(MAX_REASONS).toList();
         String why = String.join(". ", reasons) + ".";
         OptionDto top = r.options().isEmpty() ? null : r.options().get(0);
         String avoidName = r.avoid() != null ? r.avoid().name() : null;
@@ -109,7 +112,7 @@ public class ExplainService {
                     + top.estimatedShelfLifeDays() + " days" + (top.limitingFactor().equals("NONE") ? "" : ", limited by "
                     + top.limitingFactor().toLowerCase()) + ". Cost is about ₹" + fmt(top.costPer1000Inr()) + " per 1000 packs. ")
                     + "Why: " + why
-                    + (r.avoid() != null ? " Avoid " + avoidName + ": " + r.avoid().reason() + "." : "");
+                    + (r.avoid() != null ? " Avoid " + avoidName + " - it does not meet these needs." : "");
         };
     }
 }
